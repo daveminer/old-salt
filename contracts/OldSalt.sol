@@ -1,6 +1,7 @@
-pragma solidity >0.5.0;
+// SPDX-License-Identifier: MIT
+pragma solidity >=0.8.0;
 
-contract Adoption {
+contract OldSalt {
     address[16] public adopters;
 
     // Adopting a pet
