@@ -35,10 +35,10 @@ describe("Salty", function () {
 
     console.log("AFTER");
 
-    await salty.buildKeel(addr1.address)
+    const keel = await salty.buildKeel(addr1.address)
 
     // TODO: this doesn't do anything
-    expect(await salty.buildKeel(addr1.address));
+    expect(keel);
 
     //const setGreetingTx = await greeter.setGreeting("Hola, mundo!");
 

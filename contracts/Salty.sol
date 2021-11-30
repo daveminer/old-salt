@@ -23,6 +23,18 @@ contract Salty is
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
+    struct Keel {
+        uint256 length;
+        uint256 weight;
+        uint8   curve;
+    }
+
+    Keel[] public keels;
+
+    mapping (uint => address) public keelToOwner;
+    mapping (address => uint[]) public userOwnedKeels;
+
+
 
     // Mix fungible and NFTs like the way suggested by the EIP-1155 proposal:
     // https://eips.ethereum.org/EIPS/eip-1155#non-fungible-tokens
@@ -34,14 +46,6 @@ contract Salty is
     // Fungibles start their index at 1
     uint public constant WOOD = 1 << 128;
     uint public constant TAR  = 2 << 128;
-
-    // NFTs start their index at 1000
-    //uint public constant KEEL = 1001 << 128;
-    //uint128 keelCounter = 0;
-    //mapping(address)
-
-    //uint public constant HULL = 1002 << 128;
-    //uint128 hullCounter = 0;
 
 
     // struct Ship {
@@ -74,8 +78,6 @@ contract Salty is
         _setupRole(PAUSER_ROLE, msg.sender);
         _setupRole(MINTER_ROLE, msg.sender);
 
-        console.log("INITTTTTTTTTTTTTTT");
-
         //  Give all the resources to the origin account
         mint(msg.sender, WOOD, 10**6, "");
         mint(msg.sender, TAR, 10**6, "");
@@ -92,7 +94,7 @@ contract Salty is
     // }
 
     function buildKeel(
-        address account
+        address _account
     ) public {
         console.log("KEEL");
         // TODO: require and consume wood from caller
@@ -101,6 +103,10 @@ contract Salty is
         //bytes memory strBytes = bytes("");
         //bytes memory data[] = [strBytes];
 
+        keels.push(Keel(100, 100, 8));
+        uint id = keels.length - 1;
+        keelToOwner[id] = _account;
+        userOwnedKeels[_account].push(id);
         //_mint(account, KEEL + keelCounter, 1, strBytes);
     }
 
