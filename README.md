@@ -15,7 +15,7 @@ In one console and from the project root, start a standalone network:
 
 `npx hardhat node`
 
-From a new console and in the project root, start Hardhat Network console to localhost:
+From a new console and in the project root:
 ```
 // Start a Hardhat Network console to localhost
 npx hardhat console --network localhost
