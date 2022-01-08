@@ -5,7 +5,7 @@ coverage
 coverage.json
 typechain
 
-client/.next
+client/.next/
 
 #Hardhat files
 cache
