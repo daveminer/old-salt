@@ -1,8 +1,40 @@
-# Basic Sample Hardhat Project
+# Old Salt
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts.
+## Setting up the dev environment
 
-Try running some of the following tasks:
+The instructions for setting up the project are largely derived from the [Hardhat Network docs](https://hardhat.org/hardhat-network/)
+
+
+### Manual setup
+
+How to run the dev environment via Linux/OSX terminals
+
+#### Deploying the contract
+
+In one console and from the project root, start a standalone network:
+
+`npx hardhat node`
+
+From a new console and in the project root:
+```
+// Start a Hardhat Network console to localhost
+npx hardhat console --network localhost
+
+// Get the contract factory
+const Salty = await ethers.getContractFactory("Salty");
+
+// Attach the contract to the account
+const salty = Salty.attach("0x8626f6940e2eb28930efb4cef49b2d1f2c9c1199");
+
+// Call a contract function
+await salty.buildKeel("0x8626f6940e2eb28930efb4cef49b2d1f2c9c1199");
+```
+
+Congratulations, you did stuff!
+
+## Miscellaneous
+
+This project is based on Hardhat, which can run these tasks (among others):
 
 ```shell
 npx hardhat accounts
