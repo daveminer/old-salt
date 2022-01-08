@@ -5,6 +5,8 @@ coverage
 coverage.json
 typechain
 
+client/.next
+
 #Hardhat files
 cache
 artifacts
