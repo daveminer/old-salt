@@ -1,25 +1,61 @@
+import { ethers } from "ethers";
 import React, { useEffect, useState } from "react";
 
-//import { ethers } from "ethers";
-import abi from "./DummyAbi.json"
+import Salty from "../../artifacts/contracts/Salty.sol/Salty.json"
 
 interface EthereumContextInterface {
-  connectWallet: Function
+  buildKeel: Function,
+  connectWallet: Function,
+  contract: ethers.Contract | undefined,
+  currentAccount: String | undefined,
+  disconnectWallet: Function,
+  keels: Function
 }
+
+const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
 export const EthereumContext =
   React.createContext<EthereumContextInterface>({} as EthereumContextInterface);
 
-const contractAddress = "0xfCCF80344a668b72ac4Be23513F0E9E4a35C84fA";
-const contractABI = abi.abi;
-
 export const EthereumProvider = ({ children }: any) => {
+  const [contract, setContract] = useState<any>();
   const [ethereum, setEthereum] = useState<any>();
-  const [currentAccount, setCurrentAccount] = useState("");
+  const [currentAccount, setCurrentAccount] = useState<String | undefined>(undefined);
 
   useEffect(() => {
-    setEthereum(window.ethereum)
+    if (window.ethereum === undefined) return;
+
+    if (contract === undefined) {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const contract = new ethers.Contract(contractAddress, Salty.abi, provider.getSigner());
+
+      setContract(contract)
+    }
+
+    if (ethereum === undefined) { 
+      setEthereum(window.ethereum);
+    }
   })
+
+  const buildKeel = async () => {
+    try {
+      console.log('buildKeel');
+      if (!ethereum) return alert("Please install MetaMask.");
+
+      let result = await contract.buildKeel(currentAccount);
+      //const accounts = await ethereum.request({method: "eth_requestAccounts"});
+
+      //const keels = contract.keels();
+      console.log("RES", result);
+
+      return result;
+
+    } catch (error) {
+      console.log(error);
+
+      throw new Error("No ethereum object");
+    }
+  }
 
   const connectWallet = async () => {
     try {
@@ -35,10 +71,46 @@ export const EthereumProvider = ({ children }: any) => {
     }
   };
 
+  const disconnectWallet = async () => {
+    try {
+      if (!ethereum) return alert("Please install MetaMask.");
+      setCurrentAccount(undefined);
+    } catch (error) {
+      console.log(error);
+
+      throw new Error("No ethereum object");
+    }
+  };
+
+  const keels = async () => {
+    try {
+      console.log('firing');
+      if (!ethereum) return alert("Please install MetaMask.");
+      console.log("CURR", currentAccount)
+      let result = await contract.userKeels(currentAccount);
+      //const accounts = await ethereum.request({method: "eth_requestAccounts"});
+
+      //const keels = contract.keels();
+      console.log("RES", result);
+
+      return result.map((id: Number) => id.toString());
+
+    } catch (error) {
+      console.log(error);
+
+      throw new Error("No ethereum object");
+    }
+  };
+
   return (
     <EthereumContext.Provider
       value={{
-        connectWallet
+        buildKeel,
+        connectWallet,
+        contract,
+        currentAccount,
+        disconnectWallet,
+        keels
       }}
     >
       {children}
