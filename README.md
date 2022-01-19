@@ -34,6 +34,11 @@ Congratulations, you did stuff!
 
 ## Miscellaneous
 
+If Hardhat script doesn't trigger output in the node, try:
+```
+npx hardhat run --network localhost scripts/deploy-salty.js
+```
+
 This project is based on Hardhat, which can run these tasks (among others):
 
 ```shell
