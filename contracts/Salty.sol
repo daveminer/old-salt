@@ -34,7 +34,7 @@ contract Salty is
     mapping(uint256 => address) public keelToOwner;
     mapping(address => uint256[]) public userOwnedKeels;
 
-    // Mix fungible and NFTs like the way suggested by the EIP-1155 proposal:
+    // Mix fungible and NFTs as suggested by the EIP-1155 proposal:
     // https://eips.ethereum.org/EIPS/eip-1155#non-fungible-tokens
     // First 128 bits denote the resource type, the other 128 are reserved for NFTs
     // uint256 baseTokenFT = 54321 << 128;
@@ -93,11 +93,6 @@ contract Salty is
     function buildKeel(address _account) public {
         console.log("BUILDKEEL");
         // TODO: require and consume wood from caller
-        // TODO: give caller a keel
-        //keelCounter++;
-        //bytes memory strBytes = bytes("");
-        //bytes memory data[] = [strBytes];
-
         keels.push(Keel(100, 100, 8));
         uint256 id = keels.length - 1;
         keelToOwner[id] = _account;
@@ -116,6 +111,20 @@ contract Salty is
     {
         //console.log("KEELS");
         return userOwnedKeels[_account];
+    }
+
+    function userInventory(address _account)
+        public
+        view
+        returns (uint256[] memory)
+    {
+        address[] memory accts = new address[](1);
+        accts[0] = _account;
+
+        uint256[] memory materials = new uint256[](1);
+        materials[0] = WOOD;
+
+        return balanceOfBatch(accts, materials);
     }
 
     function setURI(string memory newuri) public onlyRole(URI_SETTER_ROLE) {

@@ -1,6 +1,7 @@
-require("@nomiclabs/hardhat-ethers");
-require("@nomiclabs/hardhat-waffle");
+require('@nomiclabs/hardhat-ethers');
+require('@nomiclabs/hardhat-waffle');
 require('@openzeppelin/hardhat-upgrades');
+require('hardhat-abi-exporter');
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -19,6 +20,15 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
  * @type import('hardhat/config').HardhatUserConfig
  */
 module.exports = {
+  abiExporter: {
+    path: './abi',
+    runOnCompile: true,
+    clear: true,
+    flat: true,
+    only: [':ERC20$'],
+    spacing: 2,
+    pretty: true,
+  },
   solidity: {
     version: "0.8.4",
     settings: {
@@ -27,5 +37,5 @@ module.exports = {
         runs: 200
       }
     }
-  },
+  }
 };

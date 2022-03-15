@@ -9,10 +9,11 @@ interface EthereumContextInterface {
   contract: ethers.Contract | undefined,
   currentAccount: String | undefined,
   disconnectWallet: Function,
-  keels: Function
+  keels: Function,
+  userInventory: Function
 }
 
-const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+const contractAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
 
 export const EthereumContext =
   React.createContext<EthereumContextInterface>({} as EthereumContextInterface);
@@ -84,7 +85,7 @@ export const EthereumProvider = ({ children }: any) => {
 
   const keels = async () => {
     try {
-      console.log('firing');
+      console.log(ethereum, 'firing');
       if (!ethereum) return alert("Please install MetaMask.");
       console.log("CURR", currentAccount)
       let result = await contract.userKeels(currentAccount);
@@ -102,6 +103,19 @@ export const EthereumProvider = ({ children }: any) => {
     }
   };
 
+  const userInventory = async () => {
+    try {
+      let result = await contract.userInventory(currentAccount);
+      console.log("RESULT", result);
+      return result
+    } catch (error) {
+      console.log(error);
+
+      throw new Error("No ethereum object");
+    }
+  }
+
+
   return (
     <EthereumContext.Provider
       value={{
@@ -110,7 +124,8 @@ export const EthereumProvider = ({ children }: any) => {
         contract,
         currentAccount,
         disconnectWallet,
-        keels
+        keels,
+        userInventory
       }}
     >
       {children}

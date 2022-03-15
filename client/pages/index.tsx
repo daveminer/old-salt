@@ -7,7 +7,7 @@ import styles from '../styles/Home.module.css'
 import { EthereumContext } from '../context/EthereumContext'
 
 const Home: NextPage = () => {
-  const { buildKeel, connectWallet, contract, currentAccount, disconnectWallet, keels } = useContext(EthereumContext);
+  const { buildKeel, connectWallet, contract, currentAccount, disconnectWallet, keels, userInventory } = useContext(EthereumContext);
 
   const [userKeels, setUserKeels] = useState<String[]>([]);
 
@@ -21,10 +21,11 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     if (currentAccount == undefined) return;
-    if (contract == undefined) return;
+    //if (contract == undefined) return;
 
-    fetchKeels(currentAccount)
-  }, [contract, currentAccount])
+    fetchKeels(currentAccount);
+    userInventory(currentAccount);
+  }, [currentAccount])
 
   return (
     <div className={styles.container}>
