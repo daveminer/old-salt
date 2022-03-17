@@ -29,10 +29,17 @@ contract Salty is
         uint8 curve;
     }
 
+    struct Ship {
+        uint256 signature;
+    }
+
     Keel[] public keels;
+    Ship[] public ships;
 
     mapping(uint256 => address) public keelToOwner;
+    mapping(uint256 => address) public shipToOwner;
     mapping(address => uint256[]) public userOwnedKeels;
+    mapping(address => uint256[]) public userOwnedShips;
 
     // Mix fungible and NFTs as suggested by the EIP-1155 proposal:
     // https://eips.ethereum.org/EIPS/eip-1155#non-fungible-tokens
@@ -45,6 +52,10 @@ contract Salty is
     uint256 public constant WOOD = 1 << 128;
     uint256 public constant TAR = 2 << 128;
 
+    // TODO: replace with a secure method
+    // Initializing a nonce for random numbers in development
+    uint256 randNonce = 0;
+
     // struct Ship {
     //     uint256 holdSize;
     //     uint256 cannons;
@@ -53,8 +64,6 @@ contract Salty is
     //     uint256 health;
     //     uint256 maxHealth;
     // }
-
-    // Ship[] public ships;
 
     // mapping(uint256 => uint256) tokenIdToShipIndex;
 
@@ -93,15 +102,22 @@ contract Salty is
     function buildKeel(address _account) public {
         console.log("BUILDKEEL");
         // TODO: require and consume wood from caller
+
         keels.push(Keel(100, 100, 8));
+
         uint256 id = keels.length - 1;
         keelToOwner[id] = _account;
         userOwnedKeels[_account].push(id);
         //_mint(account, KEEL + keelCounter, 1, strBytes);
     }
 
-    function buildHull() public {
-        // TODO: consume specified keel from caller, give new hull
+    function buildShip(address _account) public {
+        console.log("BUILDSHIP");
+
+        ships.push(Ship(randMod()));
+        uint256 id = ships.length - 1;
+        shipToOwner[id] = _account;
+        userOwnedShips[_account].push(id);
     }
 
     function userKeels(address _account)
@@ -111,6 +127,14 @@ contract Salty is
     {
         //console.log("KEELS");
         return userOwnedKeels[_account];
+    }
+
+    function userShips(address _account)
+        public
+        view
+        returns (uint256[] memory)
+    {
+        return userOwnedShips[_account];
     }
 
     function userInventory(address _account)
@@ -155,6 +179,13 @@ contract Salty is
         bytes memory data
     ) public onlyRole(MINTER_ROLE) {
         _mintBatch(to, ids, amounts, data);
+    }
+
+    // TODO: replace this with a secure generation method; this is dev-only
+    function randMod() internal returns (uint256) {
+        // increase nonce
+        randNonce++;
+        return uint256(keccak256(abi.encodePacked(randNonce)));
     }
 
     function _beforeTokenTransfer(

@@ -7,13 +7,14 @@ interface EthereumContextInterface {
   buildKeel: Function,
   connectWallet: Function,
   contract: ethers.Contract | undefined,
-  currentAccount: String | undefined,
+  currentAccount: string | undefined,
   disconnectWallet: Function,
   keels: Function,
+  ships: Function,
   userInventory: Function
 }
 
-const contractAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
+const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
 export const EthereumContext =
   React.createContext<EthereumContextInterface>({} as EthereumContextInterface);
@@ -21,7 +22,7 @@ export const EthereumContext =
 export const EthereumProvider = ({ children }: any) => {
   const [contract, setContract] = useState<any>();
   const [ethereum, setEthereum] = useState<any>();
-  const [currentAccount, setCurrentAccount] = useState<String | undefined>(undefined);
+  const [currentAccount, setCurrentAccount] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     if (window.ethereum === undefined) return;
@@ -34,7 +35,7 @@ export const EthereumProvider = ({ children }: any) => {
     }
 
     if (ethereum === undefined) { 
-      setEthereum(window.ethereum);
+      setEthereum(window.ethereum); 
     }
   })
 
@@ -103,6 +104,20 @@ export const EthereumProvider = ({ children }: any) => {
     }
   };
 
+  const ships = async () => {
+    try {
+      if (!ethereum) return alert("Please install MetaMask.");
+
+      let result = await contract.userShips(currentAccount);
+      
+      return result.map((id: Number) => id.toString());
+    } catch (error) {
+      console.log(error);
+
+      throw new Error("No ethereum object");
+    }
+  };
+
   const userInventory = async () => {
     try {
       let result = await contract.userInventory(currentAccount);
@@ -125,6 +140,7 @@ export const EthereumProvider = ({ children }: any) => {
         currentAccount,
         disconnectWallet,
         keels,
+        ships,
         userInventory
       }}
     >
