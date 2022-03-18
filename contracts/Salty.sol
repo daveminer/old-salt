@@ -125,7 +125,6 @@ contract Salty is
         view
         returns (uint256[] memory)
     {
-        //console.log("KEELS");
         return userOwnedKeels[_account];
     }
 
@@ -183,7 +182,6 @@ contract Salty is
 
     // TODO: replace this with a secure generation method; this is dev-only
     function randMod() internal returns (uint256) {
-        // increase nonce
         randNonce++;
         return uint256(keccak256(abi.encodePacked(randNonce)));
     }

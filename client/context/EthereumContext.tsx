@@ -4,17 +4,18 @@ import React, { useEffect, useState } from "react";
 import Salty from "../../artifacts/contracts/Salty.sol/Salty.json"
 
 interface EthereumContextInterface {
-  buildKeel: Function,
+  buildShip: Function,
   connectWallet: Function,
   contract: ethers.Contract | undefined,
   currentAccount: string | undefined,
   disconnectWallet: Function,
   keels: Function,
   ships: Function,
+  shipsTwo: Function,
   userInventory: Function
 }
 
-const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+const contractAddress = "0x0165878A594ca255338adfa4d48449f69242Eb8F";
 
 export const EthereumContext =
   React.createContext<EthereumContextInterface>({} as EthereumContextInterface);
@@ -52,6 +53,23 @@ export const EthereumProvider = ({ children }: any) => {
 
       return result;
 
+    } catch (error) {
+      console.log(error);
+
+      throw new Error("No ethereum object");
+    }
+  }
+
+  const buildShip = async () => {
+    try {
+      console.log('buildShip');
+      if (!ethereum) return alert("Please install MetaMask.");
+
+      let result = await contract.buildShip(currentAccount);
+
+      console.log("RES", result);
+
+      return result;
     } catch (error) {
       console.log(error);
 
@@ -109,8 +127,33 @@ export const EthereumProvider = ({ children }: any) => {
       if (!ethereum) return alert("Please install MetaMask.");
 
       let result = await contract.userShips(currentAccount);
+      console.log("SHIPRESSS", result)
       
       return result.map((id: Number) => id.toString());
+    } catch (error) {
+      console.log(error);
+
+      throw new Error("No ethereum object");
+    }
+  };
+
+  const shipsTwo = async () => {
+    try {
+      if (!ethereum) return alert("Please install MetaMask.");
+
+      let result = await contract.ships(0);
+      let resultTwo = await contract.ships(1);
+      //let resultThree = await contract.ships(2);
+      //let resultFour = await contract.ships(3);
+      //let resultFive = await contract.ships(4);
+      console.log("SHIPRESSsssss", result.toString())
+      console.log("SHIPRESSSfffff", resultTwo.toString())
+      //console.log("SHIPRESSSffssssssafff", resultThree.toString())
+      //console.log("SHfff", resultFour.toString())
+      //console.log("SHIPREsafff", resultFive.toString())
+      
+      return [result.toString(), resultTwo.toString()]//, resultThree.toString(), resultFour.toString()]//, resultFive.toString()];
+      //return result.concat(resultTwo).map((id: Number) => id.toString());
     } catch (error) {
       console.log(error);
 
@@ -134,13 +177,14 @@ export const EthereumProvider = ({ children }: any) => {
   return (
     <EthereumContext.Provider
       value={{
-        buildKeel,
+        buildShip,
         connectWallet,
         contract,
         currentAccount,
         disconnectWallet,
         keels,
         ships,
+        shipsTwo,
         userInventory
       }}
     >

@@ -13,7 +13,7 @@ import Navbar from './navbar/Navbar';
 import { EthereumContext } from '../context/EthereumContext'
 
 const OldSalt: NextPage = () => {
-  const { buildKeel, currentAccount, keels, userInventory } = useContext(EthereumContext);
+  const { buildShip, currentAccount, keels, ships, shipsTwo, userInventory } = useContext(EthereumContext);
 
   const [userKeels, setUserKeels] = useState<string[]>([]);
   const [userShips, setUserShips] = useState<string[]>([])
@@ -26,11 +26,20 @@ const OldSalt: NextPage = () => {
     setUserKeels(response);
   }, [currentAccount])
 
+  const fetchShips = useCallback(async (account) => {
+    let response = await shipsTwo(account);
+    //response = await response.json();
+    console.log("SHIP RESP", response);
+
+    setUserShips(response);
+  }, [currentAccount])
+
   useEffect(() => {
     if (currentAccount == undefined) return;
     //if (contract == undefined) return;
 
-    fetchKeels(currentAccount);
+    //fetchKeels(currentAccount);
+    fetchShips(currentAccount);
     userInventory(currentAccount);
   }, [currentAccount])
 
@@ -48,7 +57,7 @@ const OldSalt: NextPage = () => {
         <main className={styles.main}>
           {currentAccount ?
             <Home 
-              buildShip={() => {}}
+              buildShip={buildShip}
               currentAccount={currentAccount}
               userShips={userShips} 
             />

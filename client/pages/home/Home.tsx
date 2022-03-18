@@ -20,7 +20,7 @@ const Home = ({ buildShip, userShips }: HomeProps) =>
     <div className={styles.shipScreen}>
       <div className={styles.ships}>
         <div>
-        { userShips.length < 0 ?
+        { userShips.length > 0 ?
             userShips.map((ship, idx) => <div key={idx}>{ship}</div>) :
             <div>No ships.</div>
         }
