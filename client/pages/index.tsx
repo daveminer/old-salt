@@ -1,7 +1,6 @@
 import type { NextPage } from 'next'
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import Head from 'next/head';
-import Image from 'next/image';
 
 import styles from '../styles/Main.module.css';
 
@@ -13,21 +12,12 @@ import Navbar from './navbar/Navbar';
 import { EthereumContext } from '../context/EthereumContext'
 
 const OldSalt: NextPage = () => {
-  const { buildShip, currentAccount, keels, ships, shipsTwo, userInventory } = useContext(EthereumContext);
+  const { buildShip, currentAccount, ships, userInventory } = useContext(EthereumContext);
 
-  const [userKeels, setUserKeels] = useState<string[]>([]);
   const [userShips, setUserShips] = useState<string[]>([])
 
-  const fetchKeels = useCallback(async (account) => {
-    let response = await keels(account);
-    //response = await response.json();
-    console.log("RESP", response);
-
-    setUserKeels(response);
-  }, [currentAccount])
-
   const fetchShips = useCallback(async (account) => {
-    let response = await shipsTwo(account);
+    let response = await ships(account);
     //response = await response.json();
     console.log("SHIP RESP", response);
 
@@ -36,9 +26,7 @@ const OldSalt: NextPage = () => {
 
   useEffect(() => {
     if (currentAccount == undefined) return;
-    //if (contract == undefined) return;
 
-    //fetchKeels(currentAccount);
     fetchShips(currentAccount);
     userInventory(currentAccount);
   }, [currentAccount])
