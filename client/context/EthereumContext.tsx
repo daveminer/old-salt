@@ -87,7 +87,7 @@ export const EthereumProvider = ({ children }: any) => {
       let ships = [];
       for (let shipId in shipIds) {
         let shipSignature = await contract.ships(shipId.toString());
-        ships.push(shipSignature.toString());
+        ships.push(shipSignature);
       }
 
       return ships;
@@ -109,7 +109,6 @@ export const EthereumProvider = ({ children }: any) => {
       throw new Error("No ethereum object");
     }
   }
-
 
   return (
     <EthereumContext.Provider

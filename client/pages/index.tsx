@@ -10,18 +10,19 @@ import Landing from './Landing';
 import Navbar from './navbar/Navbar';
 
 import { EthereumContext } from '../context/EthereumContext'
+import { BigNumber } from 'ethers';
 
 const OldSalt: NextPage = () => {
   const { buildShip, currentAccount, ships, userInventory } = useContext(EthereumContext);
 
-  const [userShips, setUserShips] = useState<string[]>([])
+  const [userShips, setUserShips] = useState<BigNumber[]>([])
 
   const fetchShips = useCallback(async (account) => {
     let response = await ships(account);
     //response = await response.json();
     console.log("SHIP RESP", response);
 
-    setUserShips(response);
+    setUserShips(response.map((bigInt: any) => bigInt.toBigInt()));
   }, [currentAccount])
 
   useEffect(() => {
