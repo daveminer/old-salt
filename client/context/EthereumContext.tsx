@@ -15,7 +15,12 @@ interface EthereumContextInterface {
   userInventory: Function
 }
 
-const contractAddress = "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9";
+interface BuildShipInput {
+  tar: Number,
+  wood: Number
+}
+
+const contractAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
 
 export const EthereumContext =
   React.createContext<EthereumContextInterface>({} as EthereumContextInterface);
@@ -40,12 +45,12 @@ export const EthereumProvider = ({ children }: any) => {
     }
   })
 
-  const buildShip = async () => {
+  const buildShip = async ({tar, wood}: BuildShipInput) => {
     try {
       console.log('buildShip');
       if (!ethereum) return alert("Please install MetaMask.");
 
-      let result = await contract.buildShip(currentAccount);
+      let result = await contract.buildShip(currentAccount, tar, wood);
 
       return result;
     } catch (error) {

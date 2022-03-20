@@ -19,12 +19,8 @@ async function main() {
 
   await oldSalt.deployed();
 
-  const [owner, addr1, addr2] = await ethers.getSigners();
-
-  console.log(owner, "OWNER");
-  console.log(addr1, "ADDR1");
-  //await oldSalt.transfer()
-
+  // Replace this with the player (non-contract-owner) wallet
+  oldSalt.seedPlayerInventory(0x598aD9cA8F77815C1A1b0eABEBeB26859d1828A3);
 
   console.log("Old Salt deployed to:", oldSalt.address);
 }

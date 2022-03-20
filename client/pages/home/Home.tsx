@@ -35,17 +35,22 @@ const Home = () => {
 
   const fetchShips = useCallback(async (account) => {
     let response = await ships(account);
-    //response = await response.json();
-    console.log("SHIP RESP", response);
 
     setUserShips(response.map((bigInt: any) => bigInt.toBigInt()));
   }, [currentAccount])
 
   const fetchInventory = useCallback(async (account) => {
     let response = await userInventory(account);
-    console.log(response, "INVRESP");
-    setInventory({tar: response.tar.toNumber(), wood: response.wood.toNumber()});
+
+    setInventory({
+      tar: response.tar.toNumber(),
+      wood: response.wood.toNumber()
+    });
   }, [currentAccount])
+
+  const buildShipModal = () => {
+    
+  }
 
   useEffect(() => {
     if (currentAccount == undefined) return;
@@ -59,8 +64,8 @@ const Home = () => {
     <div className={styles.menu}>
       <button
         className={`${styles.buildShip} btn btn-secondary`}
-        onClick={() => buildShip()}>
-          Build ship
+        onClick={() => buildShipModal()}>
+          Build a ship
       </button>
       <label className={styles.inventoryItem}>Wood:</label>
       <label className={styles.inventoryAmount}>{inventory.wood}</label>

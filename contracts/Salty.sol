@@ -23,15 +23,6 @@ contract Salty is
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
-    struct Ship {
-        uint256 signature;
-    }
-
-    Ship[] public ships;
-
-    mapping(uint256 => address) public shipToOwner;
-    mapping(address => uint256[]) public userOwnedShips;
-
     // Mix fungible and NFTs as suggested by the EIP-1155 proposal:
     // https://eips.ethereum.org/EIPS/eip-1155#non-fungible-tokens
     // First 128 bits denote the resource type, the other 128 are reserved for NFTs
@@ -46,6 +37,15 @@ contract Salty is
     // TODO: replace with a secure method
     // Initializing a nonce for random numbers in development
     uint256 randNonce = 0;
+
+    struct Ship {
+        uint256 signature;
+    }
+
+    Ship[] public ships;
+
+    mapping(uint256 => address) public shipToOwner;
+    mapping(address => uint256[]) public userOwnedShips;
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() initializer {
@@ -87,21 +87,45 @@ contract Salty is
         );
     }
 
-    function minter() public view returns (address) {
+    function minter() private view returns (address) {
         return getRoleMember(MINTER_ROLE, 0);
+    }
+
+    function seedPlayerInventory(address _playerAccount)
+        public
+        onlyRole(MINTER_ROLE)
+    {
+        safeTransferFrom(msg.sender, _playerAccount, WOOD, 15000, "");
+
+        safeTransferFrom(msg.sender, _playerAccount, TAR, 15000, "");
     }
 
     // Game functions
 
-    function buildShip(address _account) public {
+    function buildShip(
+        address _account,
+        uint256 _tar,
+        uint256 _wood
+    ) public {
         // TODO: require and consume wood from caller
         console.log(_account, "ACCOUNT");
         console.log(minter(), "MINT");
+
+        removeShipMaterials(_account, _tar, _wood);
 
         ships.push(Ship(randMod()));
         uint256 id = ships.length - 1;
         shipToOwner[id] = _account;
         userOwnedShips[_account].push(id);
+    }
+
+    function removeShipMaterials(
+        address _playerAccount,
+        uint256 _tar,
+        uint256 _wood
+    ) private {
+        safeTransferFrom(_playerAccount, minter(), TAR, _tar, "");
+        safeTransferFrom(_playerAccount, minter(), WOOD, _wood, "");
     }
 
     function userShips(address _account)
