@@ -36,6 +36,10 @@ const Home = ({ buildShip, userShips }: HomeProps) =>
         onClick={() => buildShip()}>
           Build ship
       </button>
+      <label className={styles.inventoryItem}>Wood:</label>
+      <label className={styles.inventoryAmount}>{1234}</label>
+      <label className={styles.inventoryItem}>Tar:</label>
+      <label className={styles.inventoryAmount}>{5678}</label>
     </div>
     <div className={styles.shipScreen}>
       <div className={styles.ships}>

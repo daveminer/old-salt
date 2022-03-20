@@ -4,7 +4,7 @@ pragma solidity ^0.8.2;
 import "hardhat/console.sol";
 
 import "@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC1155/extensions/ERC1155BurnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC1155/extensions/ERC1155SupplyUpgradeable.sol";
@@ -14,7 +14,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 contract Salty is
     Initializable,
     ERC1155Upgradeable,
-    AccessControlUpgradeable,
+    AccessControlEnumerableUpgradeable,
     PausableUpgradeable,
     ERC1155BurnableUpgradeable,
     ERC1155SupplyUpgradeable
@@ -59,6 +59,8 @@ contract Salty is
         __ERC1155Burnable_init();
         __ERC1155Supply_init();
 
+        console.log(msg.sender, "INITIALIZING");
+
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _setupRole(URI_SETTER_ROLE, msg.sender);
         _setupRole(PAUSER_ROLE, msg.sender);
@@ -67,13 +69,34 @@ contract Salty is
         //  Give all the resources to the origin account
         mint(msg.sender, WOOD, 10**6, "");
         mint(msg.sender, TAR, 10**6, "");
+
+        safeTransferFrom(
+            msg.sender,
+            0x598aD9cA8F77815C1A1b0eABEBeB26859d1828A3,
+            WOOD,
+            15000,
+            ""
+        );
+
+        safeTransferFrom(
+            msg.sender,
+            0x598aD9cA8F77815C1A1b0eABEBeB26859d1828A3,
+            TAR,
+            15000,
+            ""
+        );
+    }
+
+    function minter() public view returns (address) {
+        return getRoleMember(MINTER_ROLE, 0);
     }
 
     // Game functions
 
     function buildShip(address _account) public {
-        console.log("BUILDSHIP");
         // TODO: require and consume wood from caller
+        console.log(_account, "ACCOUNT");
+        console.log(minter(), "MINT");
 
         ships.push(Ship(randMod()));
         uint256 id = ships.length - 1;
@@ -89,18 +112,12 @@ contract Salty is
         return userOwnedShips[_account];
     }
 
-    function userInventory(address _account)
-        public
-        view
-        returns (uint256[] memory)
-    {
-        address[] memory accts = new address[](1);
-        accts[0] = _account;
+    function tar(address _account) public view returns (uint256) {
+        return balanceOf(_account, TAR);
+    }
 
-        uint256[] memory materials = new uint256[](1);
-        materials[0] = WOOD;
-
-        return balanceOfBatch(accts, materials);
+    function wood(address _account) public view returns (uint256) {
+        return balanceOf(_account, WOOD);
     }
 
     function setURI(string memory newuri) public onlyRole(URI_SETTER_ROLE) {
@@ -159,7 +176,7 @@ contract Salty is
     function supportsInterface(bytes4 interfaceId)
         public
         view
-        override(ERC1155Upgradeable, AccessControlUpgradeable)
+        override(ERC1155Upgradeable, AccessControlEnumerableUpgradeable)
         returns (bool)
     {
         return super.supportsInterface(interfaceId);

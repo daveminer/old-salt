@@ -19,6 +19,13 @@ async function main() {
 
   await oldSalt.deployed();
 
+  const [owner, addr1, addr2] = await ethers.getSigners();
+
+  console.log(owner, "OWNER");
+  console.log(addr1, "ADDR1");
+  //await oldSalt.transfer()
+
+
   console.log("Old Salt deployed to:", oldSalt.address);
 }
 

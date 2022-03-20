@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 
 import Salty from "../../artifacts/contracts/Salty.sol/Salty.json"
 
+import { BigNumber } from 'ethers';
+
 interface EthereumContextInterface {
   buildShip: Function,
   connectWallet: Function,
@@ -13,7 +15,7 @@ interface EthereumContextInterface {
   userInventory: Function
 }
 
-const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+const contractAddress = "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9";
 
 export const EthereumContext =
   React.createContext<EthereumContextInterface>({} as EthereumContextInterface);
@@ -100,9 +102,12 @@ export const EthereumProvider = ({ children }: any) => {
 
   const userInventory = async () => {
     try {
-      let result = await contract.userInventory(currentAccount);
+      let tar = await contract.tar(currentAccount);
+      let wood = await contract.wood(currentAccount);
+      console.log(tar.toNumber(), "TAR");
+      console.log(wood.toNumber(), "WOOD");
 
-      return result
+      return { tar, wood }
     } catch (error) {
       console.log(error);
 
