@@ -1,13 +1,13 @@
-import React from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 
+import { EthereumContext } from '../../context/EthereumContext'
 import { BigNumber } from 'ethers';
 
 import styles from "./Home.module.css";
 
-interface HomeProps {
-  buildShip: Function
-  currentAccount: string | undefined
-  userShips: BigNumber[]
+interface Inventory {
+  tar: Number,
+  wood: Number
 }
 
 const shipType = (signature: any) => {
@@ -27,9 +27,35 @@ const shipType = (signature: any) => {
   } else return 'sloop'
 }
 
+const Home = () => {
+  const { buildShip, currentAccount, ships, userInventory } = useContext(EthereumContext);
 
-const Home = ({ buildShip, userShips }: HomeProps) => 
-  <div className={styles.homeWrapper}>
+  const [inventory, setInventory] = useState<Inventory>({tar: 0, wood: 0})
+  const [userShips, setUserShips] = useState<BigNumber[]>([])
+
+  const fetchShips = useCallback(async (account) => {
+    let response = await ships(account);
+    //response = await response.json();
+    console.log("SHIP RESP", response);
+
+    setUserShips(response.map((bigInt: any) => bigInt.toBigInt()));
+  }, [currentAccount])
+
+  const fetchInventory = useCallback(async (account) => {
+    let response = await userInventory(account);
+    console.log(response, "INVRESP");
+    setInventory({tar: response.tar.toNumber(), wood: response.wood.toNumber()});
+  }, [currentAccount])
+
+  useEffect(() => {
+    if (currentAccount == undefined) return;
+
+    fetchShips(currentAccount);
+    fetchInventory(currentAccount);
+  }, [currentAccount])
+
+
+  return <div className={styles.homeWrapper}>
     <div className={styles.menu}>
       <button
         className={`${styles.buildShip} btn btn-secondary`}
@@ -37,9 +63,9 @@ const Home = ({ buildShip, userShips }: HomeProps) =>
           Build ship
       </button>
       <label className={styles.inventoryItem}>Wood:</label>
-      <label className={styles.inventoryAmount}>{1234}</label>
+      <label className={styles.inventoryAmount}>{inventory.wood}</label>
       <label className={styles.inventoryItem}>Tar:</label>
-      <label className={styles.inventoryAmount}>{5678}</label>
+      <label className={styles.inventoryAmount}>{inventory.tar}</label>
     </div>
     <div className={styles.shipScreen}>
       <div className={styles.ships}>
@@ -62,5 +88,6 @@ const Home = ({ buildShip, userShips }: HomeProps) =>
       </div>
     </div>
   </div>
+}
 
 export default Home;

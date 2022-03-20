@@ -1,5 +1,5 @@
 import type { NextPage } from 'next'
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import Head from 'next/head';
 
 import styles from '../styles/Main.module.css';
@@ -10,34 +10,9 @@ import Landing from './Landing';
 import Navbar from './navbar/Navbar';
 
 import { EthereumContext } from '../context/EthereumContext'
-import { BigNumber } from 'ethers';
 
 const OldSalt: NextPage = () => {
-  const { buildShip, currentAccount, ships, userInventory } = useContext(EthereumContext);
-
-  const [inventory, setInventory] = useState<any[]>([])
-  const [userShips, setUserShips] = useState<BigNumber[]>([])
-
-  const fetchShips = useCallback(async (account) => {
-    let response = await ships(account);
-    //response = await response.json();
-    console.log("SHIP RESP", response);
-
-    setUserShips(response.map((bigInt: any) => bigInt.toBigInt()));
-  }, [currentAccount])
-
-  const fetchInventory = useCallback(async (account) => {
-    let response = await userInventory(account);
-    console.log(response, "INVRESP");
-    setInventory(response);
-  }, [currentAccount])
-
-  useEffect(() => {
-    if (currentAccount == undefined) return;
-
-    fetchShips(currentAccount);
-    fetchInventory(currentAccount);
-  }, [currentAccount])
+  const { currentAccount } = useContext(EthereumContext);
 
   return (
     <>
@@ -52,16 +27,7 @@ const OldSalt: NextPage = () => {
 
         <main className={styles.main}>
           {currentAccount ?
-            <>
-            <Home 
-              buildShip={buildShip}
-              currentAccount={currentAccount}
-              userShips={userShips} 
-            />
-            <div>
-              {inventory.toString()}
-            </div>
-            </>
+            <Home />
           : <Landing />
           }
         </main>
