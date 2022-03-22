@@ -6,7 +6,27 @@ import { BigNumber } from 'ethers';
 
 import BuildShip from "../buildShip/BuildShip";
 
+import {
+  Button,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  NumberInput,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInputField,
+  NumberInputStepper,
+  Tag
+} from '@chakra-ui/react'
+
 import styles from "./Home.module.css";
+
+interface HomeProps {
+  setTxInProgress: Function
+}
 
 interface Inventory {
   tar: Number,
@@ -30,7 +50,7 @@ const shipType = (signature: any) => {
   } else return 'sloop'
 }
 
-const Home = () => {
+const Home = ({ setTxInProgress }: HomeProps) => {
   const { currentAccount, ships, userInventory } = useContext(EthereumContext);
 
   const [inventory, setInventory] = useState<Inventory>({tar: 0, wood: 0})
@@ -66,15 +86,32 @@ const Home = () => {
 
   return <div className={styles.homeWrapper}>
     <div className={styles.menu}>
-      <button
+      <Button
         className={`${styles.buildShip} btn btn-secondary`}
+        colorScheme='green'
+        margin='4'
+        marginRight='16'
         onClick={() => buildShipModal()}>
           Build a ship
-      </button>
-      <label className={styles.inventoryItem}>Wood:</label>
-      <label className={styles.inventoryAmount}>{inventory.wood}</label>
-      <label className={styles.inventoryItem}>Tar:</label>
-      <label className={styles.inventoryAmount}>{inventory.tar}</label>
+      </Button>
+      <Tag
+        margin='4'
+        verticalAlign='center'
+        size='lg'
+        colorScheme='green'
+        borderRadius='full'
+      >
+        Wood: {inventory.wood}
+      </Tag>
+      <Tag
+        margin='4'
+        verticalAlign='center'
+        size='lg'
+        colorScheme='blackAlpha'
+        borderRadius='full'
+      >
+        Tar: {inventory.tar}
+      </Tag>
     </div>
     <div className={styles.shipScreen}>
       <div className={styles.ships}>
@@ -96,7 +133,12 @@ const Home = () => {
         Details
       </div>
     </div>
-    <BuildShip isOpen={isOpen} onClose={onClose} onOpen={onOpen} />
+    <BuildShip
+      isOpen={isOpen}
+      onClose={onClose}
+      onOpen={onOpen}
+      setTxInProgress={setTxInProgress}
+    />
   </div>
 }
 

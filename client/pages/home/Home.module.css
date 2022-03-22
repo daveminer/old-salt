@@ -17,14 +17,6 @@
   width: 100%;
 }
 
-.inventoryAmount {
-  margin-left: .5rem;
-}
-
-.inventoryItem {
-  margin-left: 2rem;
-}
-
 .menu {
   border-color: black;
   border-width: 2px 0px 0px 0px;

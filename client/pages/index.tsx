@@ -1,5 +1,5 @@
 import type { NextPage } from 'next'
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import Head from 'next/head';
 
 import Footer from './Footer';
@@ -16,6 +16,8 @@ import styles from '../styles/Main.module.css';
 const OldSalt: NextPage = () => {
   const { currentAccount } = useContext(EthereumContext);
 
+  const [txInProgress, setTxInProgress] = useState<boolean>(false);
+
   return (
     <ChakraProvider>
       <div className={styles.view}>
@@ -25,11 +27,11 @@ const OldSalt: NextPage = () => {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Navbar currentAccount={currentAccount} />
+        <Navbar currentAccount={currentAccount} txInProgress={txInProgress} />
 
         <main className={styles.main}>
           {currentAccount ?
-            <Home />
+            <Home setTxInProgress={setTxInProgress} />
           : <Landing />
           }
         </main>

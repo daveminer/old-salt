@@ -15,6 +15,7 @@ import {
   } from '@chakra-ui/react'
 import { Field, Form, Formik } from 'formik';
 
+import { ethers } from "ethers";
 import { EthereumContext } from '../../context/EthereumContext'
 
 import styles from './BuildShip.module.css';
@@ -23,9 +24,10 @@ interface BuildShipParams {
   isOpen: boolean
   onClose: Function
   onOpen: Function
+  setTxInProgress: Function
 }
 
-const BuildShip = ({ isOpen, onClose }: BuildShipParams) => {
+const BuildShip = ({ isOpen, onClose, setTxInProgress }: BuildShipParams) => {
   const { buildShip } = useContext(EthereumContext);
 
   return (
@@ -51,12 +53,22 @@ const BuildShip = ({ isOpen, onClose }: BuildShipParams) => {
             // }
             return errors;
           }}
-          onSubmit={(values, actions) => {
-            console.log("HITTT");
-            buildShip({ tar: values.tar, wood: values.wood });
+          onSubmit={async (values, actions) => {
+            const buildResult = await buildShip({ tar: values.tar, wood: values.wood });
+            console.log(buildResult, "BUILDRES")
+
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            
+            provider.once(buildResult.hash, (tx)  => {
+              setTxInProgress(false);
+              console.log(`${tx.toString()} has been mined.`)
+              // TODO: show new NFT details
+            })
+
+            setTxInProgress(true);
           }}
         >
-          {(props) => (
+          {(_props) => (
             <Form>
               <ModalCloseButton />
               <ModalBody mt={1}>

@@ -3,15 +3,16 @@ import { EthereumContext } from '../../context/EthereumContext'
 import {
   Box,
   HStack,
-  Button,
   Text
 } from '@chakra-ui/react';
+import ConnectButton from "./ConnectButton";
 
 type NavbarProps = {
   currentAccount: string | undefined,
+  txInProgress: boolean
 }
 
-const Navbar = ({ currentAccount }: NavbarProps) => {
+const Navbar = ({ currentAccount, txInProgress }: NavbarProps) => {
   const { connectWallet, disconnectWallet } = useContext(EthereumContext);
 
   return (
@@ -28,27 +29,12 @@ const Navbar = ({ currentAccount }: NavbarProps) => {
           Old Salt
         </Text>
       </Box>
-      { currentAccount ?
-        <>
-          <Box className="">
-            Account: {currentAccount}
-          </Box>
-     
-          <Button colorScheme='blue'
-            onClick={() => disconnectWallet()}
-          >
-            Disconnect wallet
-          </Button>
-        </>
-      : <>
-          <Button
-            colorScheme='blue'
-            onClick={() => connectWallet()}
-          >
-            Connect wallet
-          </Button>
-        </>
-      }
+      <ConnectButton
+        connectWallet={connectWallet}
+        currentAccount={currentAccount}
+        disconnectWallet={disconnectWallet}
+        txInProgress={txInProgress}
+      />
     </HStack>
   )
 }
