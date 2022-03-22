@@ -2,20 +2,22 @@ import type { NextPage } from 'next'
 import React, { useContext } from "react";
 import Head from 'next/head';
 
-import styles from '../styles/Main.module.css';
-
 import Footer from './Footer';
 import Home from './home/Home';
 import Landing from './Landing';
 import Navbar from './navbar/Navbar';
 
+import { ChakraProvider } from '@chakra-ui/react'
+
 import { EthereumContext } from '../context/EthereumContext'
+
+import styles from '../styles/Main.module.css';
 
 const OldSalt: NextPage = () => {
   const { currentAccount } = useContext(EthereumContext);
 
   return (
-    <>
+    <ChakraProvider>
       <div className={styles.view}>
         <Head>
           <title>Old Salt</title>
@@ -33,7 +35,7 @@ const OldSalt: NextPage = () => {
         </main>
       </div>
       <Footer />
-    </>
+    </ChakraProvider>
   )
 }
 

@@ -1,7 +1,10 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 
+import { useDisclosure } from "@chakra-ui/react";
 import { EthereumContext } from '../../context/EthereumContext'
 import { BigNumber } from 'ethers';
+
+import BuildShip from "../buildShip/BuildShip";
 
 import styles from "./Home.module.css";
 
@@ -28,10 +31,12 @@ const shipType = (signature: any) => {
 }
 
 const Home = () => {
-  const { buildShip, currentAccount, ships, userInventory } = useContext(EthereumContext);
+  const { currentAccount, ships, userInventory } = useContext(EthereumContext);
 
   const [inventory, setInventory] = useState<Inventory>({tar: 0, wood: 0})
   const [userShips, setUserShips] = useState<BigNumber[]>([])
+
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   const fetchShips = useCallback(async (account) => {
     let response = await ships(account);
@@ -49,7 +54,7 @@ const Home = () => {
   }, [currentAccount])
 
   const buildShipModal = () => {
-    
+    onOpen();
   }
 
   useEffect(() => {
@@ -58,7 +63,6 @@ const Home = () => {
     fetchShips(currentAccount);
     fetchInventory(currentAccount);
   }, [currentAccount])
-
 
   return <div className={styles.homeWrapper}>
     <div className={styles.menu}>
@@ -77,9 +81,9 @@ const Home = () => {
         <div>
         { userShips.length > 0 ?
             userShips.map((ship, idx) => {
-              return <div>
-                <div key={idx}>{ship.toString()}</div>
-                <div>
+              return <div key={`ship-${idx}`}>
+                <div key={`signature-${idx}`}>{ship.toString()}</div>
+                <div key={`shipType-${idx}`}>
                   {shipType(ship)}
                 </div>
               </div>
@@ -92,6 +96,7 @@ const Home = () => {
         Details
       </div>
     </div>
+    <BuildShip isOpen={isOpen} onClose={onClose} onOpen={onOpen} />
   </div>
 }
 

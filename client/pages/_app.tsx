@@ -1,6 +1,7 @@
-import 'bootstrap/dist/css/bootstrap.css';
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
+
+import { ChakraProvider } from '@chakra-ui/react';
 import { EthereumProvider } from '../context/EthereumContext';
 
 declare global {
@@ -9,9 +10,11 @@ declare global {
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <EthereumProvider>
-      <Component {...pageProps} />
-    </EthereumProvider>
+    <ChakraProvider>
+      <EthereumProvider>
+        <Component {...pageProps} />
+      </EthereumProvider>
+    </ChakraProvider>
   )
 }
 

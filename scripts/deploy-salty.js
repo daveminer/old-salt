@@ -20,7 +20,7 @@ async function main() {
   await oldSalt.deployed();
 
   // Replace this with the player (non-contract-owner) wallet
-  oldSalt.seedPlayerInventory(0x598aD9cA8F77815C1A1b0eABEBeB26859d1828A3);
+  await oldSalt.seedPlayerInventory("0x5FC8d32690cc91D4c39d9d3abcBD16989F875707");
 
   console.log("Old Salt deployed to:", oldSalt.address);
 }

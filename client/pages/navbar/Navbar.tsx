@@ -1,7 +1,11 @@
 import React, { useContext } from "react";
 import { EthereumContext } from '../../context/EthereumContext'
-
-import styles from "./Navbar.module.css"
+import {
+  Box,
+  HStack,
+  Button,
+  Text
+} from '@chakra-ui/react';
 
 type NavbarProps = {
   currentAccount: string | undefined,
@@ -11,26 +15,41 @@ const Navbar = ({ currentAccount }: NavbarProps) => {
   const { connectWallet, disconnectWallet } = useContext(EthereumContext);
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
-      <a className={styles.navbarBrand} href="/">OldSalt</a>
+    <HStack
+      margin='1rem'
+      spacing='auto'
+    >
+      <Box>
+        <Text
+            textAlign='left'
+            fontSize='xl'
+            fontWeight='bold'
+            fontFamily='heading'>
+          Old Salt
+        </Text>
+      </Box>
       { currentAccount ?
         <>
-          <div className="ms-auto mf-auto">
+          <Box className="">
             Account: {currentAccount}
-          </div>
-          <button onClick={() => disconnectWallet()}
-            className={`${styles.navbarWalletConnectButton} btn btn-primary`}
+          </Box>
+     
+          <Button colorScheme='blue'
+            onClick={() => disconnectWallet()}
           >
             Disconnect wallet
-          </button>
+          </Button>
         </>
-      : <button onClick={() => connectWallet()}
-          className={`${styles.navbarWalletConnectButton} btn btn-primary`}
-        >
-          Connect wallet
-        </button>
+      : <>
+          <Button
+            colorScheme='blue'
+            onClick={() => connectWallet()}
+          >
+            Connect wallet
+          </Button>
+        </>
       }
-    </nav>
+    </HStack>
   )
 }
 

@@ -3,8 +3,6 @@ import React, { useEffect, useState } from "react";
 
 import Salty from "../../artifacts/contracts/Salty.sol/Salty.json"
 
-import { BigNumber } from 'ethers';
-
 interface EthereumContextInterface {
   buildShip: Function,
   connectWallet: Function,
@@ -20,7 +18,7 @@ interface BuildShipInput {
   wood: Number
 }
 
-const contractAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
+const contractAddress = "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707";
 
 export const EthereumContext =
   React.createContext<EthereumContextInterface>({} as EthereumContextInterface);
@@ -45,9 +43,8 @@ export const EthereumProvider = ({ children }: any) => {
     }
   })
 
-  const buildShip = async ({tar, wood}: BuildShipInput) => {
+  const buildShip = async ({ tar, wood }: BuildShipInput) => {
     try {
-      console.log('buildShip');
       if (!ethereum) return alert("Please install MetaMask.");
 
       let result = await contract.buildShip(currentAccount, tar, wood);

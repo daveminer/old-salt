@@ -69,22 +69,6 @@ contract Salty is
         //  Give all the resources to the origin account
         mint(msg.sender, WOOD, 10**6, "");
         mint(msg.sender, TAR, 10**6, "");
-
-        safeTransferFrom(
-            msg.sender,
-            0x598aD9cA8F77815C1A1b0eABEBeB26859d1828A3,
-            WOOD,
-            15000,
-            ""
-        );
-
-        safeTransferFrom(
-            msg.sender,
-            0x598aD9cA8F77815C1A1b0eABEBeB26859d1828A3,
-            TAR,
-            15000,
-            ""
-        );
     }
 
     function minter() private view returns (address) {
@@ -95,6 +79,7 @@ contract Salty is
         public
         onlyRole(MINTER_ROLE)
     {
+        console.log(_playerAccount, "XFER");
         safeTransferFrom(msg.sender, _playerAccount, WOOD, 15000, "");
 
         safeTransferFrom(msg.sender, _playerAccount, TAR, 15000, "");
