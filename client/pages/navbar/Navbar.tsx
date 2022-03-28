@@ -22,10 +22,10 @@ const Navbar = ({ currentAccount, txInProgress }: NavbarProps) => {
     >
       <Box>
         <Text
-            textAlign='left'
-            fontSize='xl'
-            fontWeight='bold'
-            fontFamily='heading'>
+          textAlign='left'
+          fontSize='xl'
+          fontWeight='bold'
+          fontFamily='heading'>
           Old Salt
         </Text>
       </Box>

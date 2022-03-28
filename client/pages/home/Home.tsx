@@ -2,23 +2,12 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 
 import { useDisclosure } from "@chakra-ui/react";
 import { EthereumContext } from '../../context/EthereumContext'
-import { BigNumber } from 'ethers';
 
 import BuildShip from "../buildShip/BuildShip";
 
 import {
+  Box,
   Button,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  NumberInput,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
-  NumberInputField,
-  NumberInputStepper,
   Tag
 } from '@chakra-ui/react'
 
@@ -26,6 +15,9 @@ import styles from "./Home.module.css";
 
 interface HomeProps {
   setTxInProgress: Function
+  setUserShips: Function
+  setCurrentScreen: Function
+  userShips: string[]
 }
 
 interface Inventory {
@@ -39,7 +31,7 @@ const shipType = (signature: any) => {
     bits.padStart(256, '0')
   }
 
-  let type = parseInt(bits.substring(0,4), 2) % 4
+  let type = parseInt(bits.substring(0, 4), 2) % 4
 
   if (type == 3) {
     return 'galleon';
@@ -50,11 +42,10 @@ const shipType = (signature: any) => {
   } else return 'sloop'
 }
 
-const Home = ({ setTxInProgress }: HomeProps) => {
+const Home = ({ setTxInProgress, setUserShips, setCurrentScreen, userShips }: HomeProps) => {
   const { currentAccount, ships, userInventory } = useContext(EthereumContext);
 
-  const [inventory, setInventory] = useState<Inventory>({tar: 0, wood: 0})
-  const [userShips, setUserShips] = useState<BigNumber[]>([])
+  const [inventory, setInventory] = useState<Inventory>({ tar: 0, wood: 0 })
 
   const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -86,37 +77,56 @@ const Home = ({ setTxInProgress }: HomeProps) => {
 
   return <div className={styles.homeWrapper}>
     <div className={styles.menu}>
-      <Button
-        className={`${styles.buildShip} btn btn-secondary`}
-        colorScheme='green'
-        margin='4'
-        marginRight='16'
-        onClick={() => buildShipModal()}>
+      <Box
+        display={'table'}
+      >
+        <Button
+          className={`${styles.buildShip} btn btn-secondary`}
+          colorScheme='green'
+          marginRight='16'
+          onClick={() => buildShipModal()}>
           Build a ship
-      </Button>
-      <Tag
-        margin='4'
-        verticalAlign='center'
-        size='lg'
-        colorScheme='green'
-        borderRadius='full'
-      >
-        Wood: {inventory.wood}
-      </Tag>
-      <Tag
-        margin='4'
-        verticalAlign='center'
-        size='lg'
-        colorScheme='blackAlpha'
-        borderRadius='full'
-      >
-        Tar: {inventory.tar}
-      </Tag>
+        </Button>
+        <Tag
+          size='lg'
+          colorScheme='green'
+          borderRadius='full'
+          verticalAlign={'middle'}
+        >
+          Wood: {inventory.wood}
+        </Tag>
+        <Tag
+          marginLeft={4}
+          size='lg'
+          colorScheme='blackAlpha'
+          borderRadius='full'
+          verticalAlign={'middle'}
+        >
+          Tar: {inventory.tar}
+        </Tag>
+        <Tag
+          marginLeft={4}
+          size='lg'
+          colorScheme='yellow'
+          borderRadius='full'
+          verticalAlign={'middle'}
+        >
+          Gold: {'00'}
+        </Tag>
+      </Box>
+      <Box>
+        <Button
+          className={`${styles.buildShip} btn btn-secondary`}
+          colorScheme='orange'
+          onClick={() => setCurrentScreen('cityList')}>
+          Destinations
+        </Button>
+      </Box>
     </div>
     <div className={styles.shipScreen}>
       <div className={styles.ships}>
         <div>
-        { userShips.length > 0 ?
+          {userShips.length > 0 ?
             userShips.map((ship, idx) => {
               return <div key={`ship-${idx}`}>
                 <div key={`signature-${idx}`}>{ship.toString()}</div>
@@ -126,7 +136,7 @@ const Home = ({ setTxInProgress }: HomeProps) => {
               </div>
             }) :
             <div>No ships.</div>
-        }
+          }
         </div>
       </div>
       <div className={styles.details}>
@@ -134,10 +144,12 @@ const Home = ({ setTxInProgress }: HomeProps) => {
       </div>
     </div>
     <BuildShip
+      currentAccount={currentAccount}
       isOpen={isOpen}
       onClose={onClose}
       onOpen={onOpen}
       setTxInProgress={setTxInProgress}
+      setUserShips={setUserShips}
     />
   </div>
 }

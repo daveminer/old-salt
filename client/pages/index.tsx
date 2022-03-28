@@ -12,11 +12,17 @@ import { ChakraProvider } from '@chakra-ui/react'
 import { EthereumContext } from '../context/EthereumContext'
 
 import styles from '../styles/Main.module.css';
+import CityList from './city';
+import CityDetails from './city/show';
 
 const OldSalt: NextPage = () => {
   const { currentAccount } = useContext(EthereumContext);
 
+  const [currentCity, setCurrentCity] = useState<string | undefined>(undefined)
+  const [currentScreen, setCurrentScreen] = useState<string | undefined>(undefined)
   const [txInProgress, setTxInProgress] = useState<boolean>(false);
+  const [userShips, setUserShips] = useState<string[]>([]);
+
 
   return (
     <ChakraProvider>
@@ -30,9 +36,34 @@ const OldSalt: NextPage = () => {
         <Navbar currentAccount={currentAccount} txInProgress={txInProgress} />
 
         <main className={styles.main}>
-          {currentAccount ?
-            <Home setTxInProgress={setTxInProgress} />
-          : <Landing />
+          {
+            function () {
+              if (!currentAccount) {
+                return <Landing />
+              }
+
+              if (currentScreen === 'cityList') {
+                return <CityList setCurrentCity={setCurrentCity} setCurrentScreen={setCurrentScreen} />
+              }
+
+              if (currentScreen === 'cityDetails') {
+                if (currentCity === undefined) {
+                  console.error('City missing for city details view.');
+                  return;
+                }
+
+                return <CityDetails city={currentCity} />
+              }
+
+              return (
+                <Home
+                  setTxInProgress={setTxInProgress}
+                  setUserShips={setUserShips}
+                  setCurrentScreen={setCurrentScreen}
+                  userShips={userShips}
+                />
+              )
+            }()
           }
         </main>
       </div>
