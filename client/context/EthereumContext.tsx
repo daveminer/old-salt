@@ -18,7 +18,7 @@ interface BuildShipInput {
   wood: Number
 }
 
-const contractAddress = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0";
+const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
 
 export const EthereumContext =
   React.createContext<EthereumContextInterface>({} as EthereumContextInterface);
@@ -30,9 +30,14 @@ export const EthereumProvider = ({ children }: any) => {
 
   useEffect(() => {
     if (window.ethereum === undefined) return;
+    if (contractAddress === undefined) {
+      console.error("CONTRACT_ADDRESS is undefined.");
+      return;
+    }
 
     if (contract === undefined) {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
+
       const contract = new ethers.Contract(contractAddress, Salty.abi, provider.getSigner());
 
       setContract(contract)

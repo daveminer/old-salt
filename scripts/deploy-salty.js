@@ -25,6 +25,7 @@ async function main() {
   );
 
   console.log("Old Salt deployed to:", oldSalt.address);
+  console.log("Put this address into the CONTRACT_ADDRESS env var.");
 }
 
 // We recommend this pattern to be able to use async/await everywhere

@@ -1,11 +1,15 @@
 import React from "react";
 
-// TODO: fix this
-import styles from '../styles/Main.module.css';
+import { Box, Center, Heading, VStack } from '@chakra-ui/react'
 
-const Landing = () => 
-  <>
-    <h1>Old Salt</h1>
-  </>
+const Landing = () =>
+  <Center
+    flex={1}
+  >
+    <VStack >
+      <Heading marginBottom={12} size='2xl'>Old Salt</Heading>
+      <Heading size='md'>A high seas NFT adventure.</Heading>
+    </VStack>
+  </Center>
 
 export default Landing;

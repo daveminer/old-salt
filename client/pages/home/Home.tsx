@@ -1,28 +1,14 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect } from "react";
 
-import { useDisclosure } from "@chakra-ui/react";
 import { EthereumContext } from '../../context/EthereumContext'
 
-import BuildShip from "../buildShip/BuildShip";
-
-import {
-  Box,
-  Button,
-  Tag
-} from '@chakra-ui/react'
-
-import styles from "./Home.module.css";
+import { Box } from '@chakra-ui/react';
 
 interface HomeProps {
   setTxInProgress: Function
   setUserShips: Function
   setCurrentScreen: Function
   userShips: string[]
-}
-
-interface Inventory {
-  tar: Number,
-  wood: Number
 }
 
 const shipType = (signature: any) => {
@@ -42,12 +28,8 @@ const shipType = (signature: any) => {
   } else return 'sloop'
 }
 
-const Home = ({ setTxInProgress, setUserShips, setCurrentScreen, userShips }: HomeProps) => {
-  const { currentAccount, ships, userInventory } = useContext(EthereumContext);
-
-  const [inventory, setInventory] = useState<Inventory>({ tar: 0, wood: 0 })
-
-  const { isOpen, onOpen, onClose } = useDisclosure()
+const Home = ({ setUserShips, userShips }: HomeProps) => {
+  const { currentAccount, ships } = useContext(EthereumContext);
 
   const fetchShips = useCallback(async (account) => {
     let response = await ships(account);
@@ -55,77 +37,20 @@ const Home = ({ setTxInProgress, setUserShips, setCurrentScreen, userShips }: Ho
     setUserShips(response.map((bigInt: any) => bigInt.toBigInt()));
   }, [currentAccount])
 
-  const fetchInventory = useCallback(async (account) => {
-    let response = await userInventory(account);
-
-    setInventory({
-      tar: response.tar.toNumber(),
-      wood: response.wood.toNumber()
-    });
-  }, [currentAccount])
-
-  const buildShipModal = () => {
-    onOpen();
-  }
-
   useEffect(() => {
     if (currentAccount == undefined) return;
 
     fetchShips(currentAccount);
-    fetchInventory(currentAccount);
   }, [currentAccount])
 
-  return <div className={styles.homeWrapper}>
-    <div className={styles.menu}>
-      <Box
-        display={'table'}
-      >
-        <Button
-          className={`${styles.buildShip} btn btn-secondary`}
-          colorScheme='green'
-          marginRight='16'
-          onClick={() => buildShipModal()}>
-          Build a ship
-        </Button>
-        <Tag
-          size='lg'
-          colorScheme='green'
-          borderRadius='full'
-          verticalAlign={'middle'}
-        >
-          Wood: {inventory.wood}
-        </Tag>
-        <Tag
-          marginLeft={4}
-          size='lg'
-          colorScheme='blackAlpha'
-          borderRadius='full'
-          verticalAlign={'middle'}
-        >
-          Tar: {inventory.tar}
-        </Tag>
-        <Tag
-          marginLeft={4}
-          size='lg'
-          colorScheme='yellow'
-          borderRadius='full'
-          verticalAlign={'middle'}
-        >
-          Gold: {'00'}
-        </Tag>
-      </Box>
+  return (
+    <Box
+      display={'grid'}
+      flex={1}
+      width={'100%'}
+    >
       <Box>
-        <Button
-          className={`${styles.buildShip} btn btn-secondary`}
-          colorScheme='orange'
-          onClick={() => setCurrentScreen('cityList')}>
-          Destinations
-        </Button>
-      </Box>
-    </div>
-    <div className={styles.shipScreen}>
-      <div className={styles.ships}>
-        <div>
+        <Box>
           {userShips.length > 0 ?
             userShips.map((ship, idx) => {
               return <div key={`ship-${idx}`}>
@@ -137,21 +62,15 @@ const Home = ({ setTxInProgress, setUserShips, setCurrentScreen, userShips }: Ho
             }) :
             <div>No ships.</div>
           }
-        </div>
-      </div>
-      <div className={styles.details}>
+        </Box>
+      </Box>
+      <Box
+        gridColumn={'2/5'}
+      >
         Details
-      </div>
-    </div>
-    <BuildShip
-      currentAccount={currentAccount}
-      isOpen={isOpen}
-      onClose={onClose}
-      onOpen={onOpen}
-      setTxInProgress={setTxInProgress}
-      setUserShips={setUserShips}
-    />
-  </div>
+      </Box>
+    </Box >
+  )
 }
 
 export default Home;

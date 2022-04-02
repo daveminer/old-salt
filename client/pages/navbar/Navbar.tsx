@@ -9,10 +9,11 @@ import ConnectButton from "./ConnectButton";
 
 type NavbarProps = {
   currentAccount: string | undefined,
+  setScreen: Function,
   txInProgress: boolean
 }
 
-const Navbar = ({ currentAccount, txInProgress }: NavbarProps) => {
+const Navbar = ({ currentAccount, setScreen, txInProgress }: NavbarProps) => {
   const { connectWallet, disconnectWallet } = useContext(EthereumContext);
 
   return (
@@ -33,6 +34,7 @@ const Navbar = ({ currentAccount, txInProgress }: NavbarProps) => {
         connectWallet={connectWallet}
         currentAccount={currentAccount}
         disconnectWallet={disconnectWallet}
+        setScreen={setScreen}
         txInProgress={txInProgress}
       />
     </HStack>

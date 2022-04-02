@@ -14,15 +14,32 @@ import { EthereumContext } from '../context/EthereumContext'
 import styles from '../styles/Main.module.css';
 import CityList from './city';
 import CityDetails from './city/show';
+import MapControlBar from './controlBar/MapControlBar'
+import ShipyardControlBar from './controlBar/ShipyardControlBar'
+
+import { Box } from '@chakra-ui/react';
+
+export enum GameScreen {
+  Landing = "landing",
+  Map = "map",
+  Shipyard = "shipyard",
+  CityDetail = "city_detail"
+}
+
+export interface Inventory {
+  tar: Number,
+  wood: Number
+}
+
 
 const OldSalt: NextPage = () => {
   const { currentAccount } = useContext(EthereumContext);
 
   const [currentCity, setCurrentCity] = useState<string | undefined>(undefined)
-  const [currentScreen, setCurrentScreen] = useState<string | undefined>(undefined)
+  const [currentScreen, setCurrentScreen] = useState<GameScreen>(GameScreen.Landing)
+  const [inventory, setInventory] = useState<Inventory>({ tar: 0, wood: 0 })
   const [txInProgress, setTxInProgress] = useState<boolean>(false);
   const [userShips, setUserShips] = useState<string[]>([]);
-
 
   return (
     <ChakraProvider>
@@ -33,26 +50,62 @@ const OldSalt: NextPage = () => {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Navbar currentAccount={currentAccount} txInProgress={txInProgress} />
+        <Box
+          borderColor={'black'}
+          borderWidth={'0px 0px 0px 0px'}
+          borderStyle={'solid'}
+        >
+          <Navbar
+            currentAccount={currentAccount}
+            setScreen={setCurrentScreen}
+            txInProgress={txInProgress}
+          />
+        </Box>
 
-        <main className={styles.main}>
+        <Box className={styles.main}>
+          {
+            function () {
+              if (currentScreen === GameScreen.Shipyard) {
+                return <ShipyardControlBar
+                  inventory={inventory}
+                  screen={currentScreen}
+                  setInventory={setInventory}
+                  setScreen={setCurrentScreen}
+                  setTxInProgress={setTxInProgress}
+                  setUserShips={setUserShips}
+                />
+              }
+              if (currentScreen === GameScreen.Map) {
+                return <MapControlBar
+                  inventory={inventory}
+                  screen={currentScreen}
+                  setInventory={setInventory}
+                  setScreen={setCurrentScreen}
+                  setTxInProgress={setTxInProgress}
+                  setUserShips={setUserShips}
+                />
+              }
+
+              return null;
+            }()
+          }
           {
             function () {
               if (!currentAccount) {
                 return <Landing />
               }
 
-              if (currentScreen === 'cityList') {
+              if (currentScreen === GameScreen.Map) {
                 return <CityList setCurrentCity={setCurrentCity} setCurrentScreen={setCurrentScreen} />
               }
 
-              if (currentScreen === 'cityDetails') {
+              if (currentScreen === GameScreen.CityDetail) {
                 if (currentCity === undefined) {
                   console.error('City missing for city details view.');
                   return;
                 }
 
-                return <CityDetails city={currentCity} />
+                return <CityDetails city={currentCity} population={100} setScreen={setCurrentScreen} />
               }
 
               return (
@@ -65,7 +118,7 @@ const OldSalt: NextPage = () => {
               )
             }()
           }
-        </main>
+        </Box>
       </div>
       <Footer />
     </ChakraProvider>

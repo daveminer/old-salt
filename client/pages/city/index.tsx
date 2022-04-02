@@ -9,6 +9,7 @@ import {
   Th,
   Tr,
 } from '@chakra-ui/react';
+import { GameScreen } from "..";
 
 interface CityListProps {
   setCurrentCity: Function
@@ -49,7 +50,7 @@ const CityList = ({ setCurrentCity, setCurrentScreen }: CityListProps) => {
                   }}
                   onClick={() => {
                     setCurrentCity(city.name);
-                    setCurrentScreen('cityDetails');
+                    setCurrentScreen(GameScreen.CityDetail);
                   }}
                 >
                   <Td>
@@ -67,7 +68,7 @@ const CityList = ({ setCurrentCity, setCurrentScreen }: CityListProps) => {
           </Tbody>
         </Table>
       </Box>
-    </Stack >
+    </Stack>
   );
 };
 

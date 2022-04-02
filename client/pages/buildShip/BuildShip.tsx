@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import {
+  Box,
   Button,
   Modal,
   ModalOverlay,
@@ -18,7 +19,6 @@ import { Field, Form, Formik } from 'formik';
 import { ethers } from "ethers";
 import { EthereumContext } from '../../context/EthereumContext'
 
-import styles from './BuildShip.module.css';
 
 interface BuildShipParams {
   currentAccount: string | undefined
@@ -40,7 +40,7 @@ const BuildShip = ({
 
   return (
     <>
-      <div className={styles.buildShipForm}>
+      <Box marginTop={'1rem'}>
         <Modal isOpen={isOpen} onClose={() => onClose()}>
           <ModalOverlay />
           <ModalContent>
@@ -120,7 +120,7 @@ const BuildShip = ({
             </Formik>
           </ModalContent>
         </Modal>
-      </div>
+      </Box>
     </>
   )
 }
