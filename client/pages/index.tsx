@@ -66,7 +66,6 @@ const OldSalt: NextPage = () => {
             <ControlBar
               currentScreen={currentScreen}
               inventory={inventory}
-              screen={currentScreen}
               setInventory={setInventory}
               setScreen={setCurrentScreen}
               setTxInProgress={setTxInProgress}

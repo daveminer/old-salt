@@ -3,6 +3,7 @@ import React, { useContext } from "react";
 import { EthereumContext } from '../../context/EthereumContext';
 import { GameScreen, Inventory } from '../index';
 import BuildShip from "../buildShip/BuildShip";
+import Embark from "../embark/Embark";
 import InventoryPane from "./InventoryPane";
 
 import {
@@ -28,9 +29,11 @@ const ControlBar = ({ currentScreen,
   setUserShips
 }: ControlBarProps) => {
   const { currentAccount } = useContext(EthereumContext);
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const buildShipModal = useDisclosure();
+  const embarkModal = useDisclosure();
 
-  const buildShipModal = () => onOpen();
+  const openShipModal = () => buildShipModal.onOpen();
+  const openEmbarkModal = () => embarkModal.onOpen();
 
   return (
     <>
@@ -50,14 +53,14 @@ const ControlBar = ({ currentScreen,
           {(currentScreen === GameScreen.Shipyard) &&
             <Button
               colorScheme='green'
-              onClick={() => buildShipModal()}>
+              onClick={() => openShipModal()}>
               Build a ship
             </Button>
           }
           {(currentScreen === GameScreen.CityDetail) &&
             <Button
               colorScheme='green'
-              onClick={() => embarkModal()}>
+              onClick={() => openEmbarkModal()}>
               Embark
             </Button>
           }
@@ -83,9 +86,17 @@ const ControlBar = ({ currentScreen,
       </Box>
       <BuildShip
         currentAccount={currentAccount}
-        isOpen={isOpen}
-        onClose={onClose}
-        onOpen={onOpen}
+        isOpen={buildShipModal.isOpen}
+        onClose={buildShipModal.onClose}
+        onOpen={buildShipModal.onOpen}
+        setTxInProgress={setTxInProgress}
+        setUserShips={setUserShips}
+      />
+      <Embark
+        currentAccount={currentAccount}
+        isOpen={embarkModal.isOpen}
+        onClose={embarkModal.onClose}
+        onOpen={embarkModal.onOpen}
         setTxInProgress={setTxInProgress}
         setUserShips={setUserShips}
       />

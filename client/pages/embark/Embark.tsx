@@ -20,7 +20,7 @@ import { ethers } from "ethers";
 import { EthereumContext } from '../../context/EthereumContext'
 
 
-interface BuildShipProps {
+interface EmbarkProps {
   currentAccount: string | undefined
   isOpen: boolean
   onClose: Function
@@ -29,14 +29,14 @@ interface BuildShipProps {
   setUserShips: Function
 }
 
-const BuildShip = ({
+const Embark = ({
   currentAccount,
   isOpen,
   onClose,
   setTxInProgress,
   setUserShips
-}: BuildShipProps) => {
-  const { buildShip, ships } = useContext(EthereumContext);
+}: EmbarkProps) => {
+  //const { embark } = useContext(EthereumContext);
 
   return (
     <>
@@ -62,19 +62,19 @@ const BuildShip = ({
                 return errors;
               }}
               onSubmit={async (values, actions) => {
-                const buildResult = await buildShip({ tar: values.tar, wood: values.wood });
-                console.log(buildResult, "BUILDRES")
+                //const voyageResult = await embark({ destination: "", ship: "" });
+                //console.log(buildResult, "BUILDRES")
 
                 const provider = new ethers.providers.Web3Provider(window.ethereum);
 
-                provider.once(buildResult.hash, async (tx) => {
-                  setTxInProgress(false);
-                  console.log(`${tx.toString()} has been mined.`)
-                  // TODO: show new NFT details
-                  let response = await ships(currentAccount);
+                // provider.once(buildResult.hash, async (tx) => {
+                //   setTxInProgress(false);
+                //   console.log(`${tx.toString()} has been mined.`)
+                //   // TODO: show new NFT details
+                //   let response = await ships(currentAccount);
 
-                  setUserShips(response.map((bigInt: any) => bigInt.toBigInt()));
-                })
+                //   setUserShips(response.map((bigInt: any) => bigInt.toBigInt()));
+                // })
 
                 setTxInProgress(true);
                 onClose();
@@ -85,22 +85,11 @@ const BuildShip = ({
                   <ModalCloseButton />
                   <ModalBody mt={1}>
                     <div>
-                      Commit resources to ship building
+                      Which ship to send on a voyage?
                     </div>
-                    <Field name="wood">
+                    <Field name="ship">
                       {({ field, form }: any) => (
                         <NumberInput {...field} allowMouseWheel defaultValue={10} min={10} max={1000000}>
-                          <NumberInputField />
-                          <NumberInputStepper>
-                            <NumberIncrementStepper />
-                            <NumberDecrementStepper />
-                          </NumberInputStepper>
-                        </NumberInput>
-                      )}
-                    </Field>
-                    <Field name="tar">
-                      {({ field, form }: any) => (
-                        <NumberInput {...field} allowMouseWheel defaultValue={3} min={3} max={1000000}>
                           <NumberInputField />
                           <NumberInputStepper>
                             <NumberIncrementStepper />
@@ -112,7 +101,7 @@ const BuildShip = ({
                   </ModalBody>
                   <ModalFooter>
                     <Button type='submit'>
-                      Begin building
+                      Embark
                     </Button>
                   </ModalFooter>
                 </Form>
@@ -125,4 +114,4 @@ const BuildShip = ({
   )
 }
 
-export default BuildShip;
+export default Embark;
