@@ -14,8 +14,7 @@ import { EthereumContext } from '../context/EthereumContext'
 import styles from '../styles/Main.module.css';
 import CityList from './city';
 import CityDetails from './city/show';
-import MapControlBar from './controlBar/MapControlBar'
-import ShipyardControlBar from './controlBar/ShipyardControlBar'
+import ControlBar from './controlBar/ControlBar'
 
 import { Box } from '@chakra-ui/react';
 
@@ -63,31 +62,16 @@ const OldSalt: NextPage = () => {
         </Box>
 
         <Box className={styles.main}>
-          {
-            function () {
-              if (currentScreen === GameScreen.Shipyard) {
-                return <ShipyardControlBar
-                  inventory={inventory}
-                  screen={currentScreen}
-                  setInventory={setInventory}
-                  setScreen={setCurrentScreen}
-                  setTxInProgress={setTxInProgress}
-                  setUserShips={setUserShips}
-                />
-              }
-              if (currentScreen === GameScreen.Map) {
-                return <MapControlBar
-                  inventory={inventory}
-                  screen={currentScreen}
-                  setInventory={setInventory}
-                  setScreen={setCurrentScreen}
-                  setTxInProgress={setTxInProgress}
-                  setUserShips={setUserShips}
-                />
-              }
-
-              return null;
-            }()
+          {(currentScreen !== GameScreen.Landing) &&
+            <ControlBar
+              currentScreen={currentScreen}
+              inventory={inventory}
+              screen={currentScreen}
+              setInventory={setInventory}
+              setScreen={setCurrentScreen}
+              setTxInProgress={setTxInProgress}
+              setUserShips={setUserShips}
+            />
           }
           {
             function () {

@@ -11,17 +11,6 @@ interface CityDetailsProps {
 const CityDetails = ({ city, population, setScreen }: CityDetailsProps) => {
   return (
     <>
-      <Flex direction='row' marginBottom={16}>
-        <Button>
-          Embark
-        </Button>
-        <Button onClick={() => setScreen(GameScreen.Map)}>
-          Back to map
-        </Button>
-        <Button onClick={() => setScreen(GameScreen.Shipyard)}>
-          Back to shipyard
-        </Button>
-      </Flex>
       <Heading size='xl'>{city}</Heading>
       <Heading marginBottom='8' size='md'>Population: {population}</Heading>
       <SimpleGrid columns={2} width='100%'>
