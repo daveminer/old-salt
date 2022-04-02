@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useCallback, useEffect } from "react";
 import {
   Box,
   Button,
@@ -8,11 +8,7 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  NumberInput,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
-  NumberInputField,
-  NumberInputStepper
+  Select,
 } from '@chakra-ui/react'
 import { Field, Form, Formik } from 'formik';
 
@@ -26,17 +22,17 @@ interface EmbarkProps {
   onClose: Function
   onOpen: Function
   setTxInProgress: Function
-  setUserShips: Function
+  setShips: Function
+  ships: string[]
 }
 
 const Embark = ({
-  currentAccount,
   isOpen,
   onClose,
   setTxInProgress,
-  setUserShips
+  ships
 }: EmbarkProps) => {
-  //const { embark } = useContext(EthereumContext);
+  const { embark } = useContext(EthereumContext);
 
   return (
     <>
@@ -46,8 +42,7 @@ const Embark = ({
           <ModalContent>
             <Formik
               initialValues={{
-                tar: '3',
-                wood: '10'
+                ship: ''
               }}
               validate={values => {
                 console.log(values, "VALIDATE");
@@ -62,7 +57,8 @@ const Embark = ({
                 return errors;
               }}
               onSubmit={async (values, actions) => {
-                //const voyageResult = await embark({ destination: "", ship: "" });
+
+                const voyageResult = await embark({ destination: "", ship: values.ship });
                 //console.log(buildResult, "BUILDRES")
 
                 const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -84,18 +80,26 @@ const Embark = ({
                 <Form>
                   <ModalCloseButton />
                   <ModalBody mt={1}>
-                    <div>
+                    <Box
+                      marginBottom={4}
+                    >
                       Which ship to send on a voyage?
-                    </div>
+                    </Box>
                     <Field name="ship">
                       {({ field, form }: any) => (
-                        <NumberInput {...field} allowMouseWheel defaultValue={10} min={10} max={1000000}>
-                          <NumberInputField />
-                          <NumberInputStepper>
-                            <NumberIncrementStepper />
-                            <NumberDecrementStepper />
-                          </NumberInputStepper>
-                        </NumberInput>
+                        <Select
+                          {...field}
+                          placeholder='Select vessel...'
+                        >
+                          {
+                            ships.map((ship) => {
+                              return (
+                                <option value={`${ship}`}>{`${ship}`}</option>
+                              )
+                            })
+
+                          }
+                        </Select>
                       )}
                     </Field>
                   </ModalBody>

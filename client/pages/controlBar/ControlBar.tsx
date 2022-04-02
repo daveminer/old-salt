@@ -19,6 +19,7 @@ interface ControlBarProps {
   setScreen: Function
   setTxInProgress: Function
   setUserShips: Function
+  ships: string[]
 }
 
 const ControlBar = ({ currentScreen,
@@ -26,7 +27,8 @@ const ControlBar = ({ currentScreen,
   setInventory,
   setScreen,
   setTxInProgress,
-  setUserShips
+  setUserShips,
+  ships
 }: ControlBarProps) => {
   const { currentAccount } = useContext(EthereumContext);
   const buildShipModal = useDisclosure();
@@ -98,7 +100,8 @@ const ControlBar = ({ currentScreen,
         onClose={embarkModal.onClose}
         onOpen={embarkModal.onOpen}
         setTxInProgress={setTxInProgress}
-        setUserShips={setUserShips}
+        setShips={setUserShips}
+        ships={ships}
       />
     </>
   )

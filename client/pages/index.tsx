@@ -70,6 +70,7 @@ const OldSalt: NextPage = () => {
               setScreen={setCurrentScreen}
               setTxInProgress={setTxInProgress}
               setUserShips={setUserShips}
+              ships={userShips}
             />
           }
           {
