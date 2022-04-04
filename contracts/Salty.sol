@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.2;
 
+import {Voyage} from "./Voyage.sol";
 import "hardhat/console.sol";
 
 import "@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol";
@@ -31,8 +32,8 @@ contract Salty is
     // balanceOf(baseTokenNFT + indexNFT, msg.sender);
 
     // Fungibles start their index at 1
-    uint256 public constant WOOD = 1 << 128;
-    uint256 public constant TAR = 2 << 128;
+    uint256 public constant DOUBLOON = 1 << 128;
+    uint256 public constant WOOD = 2 << 128;
 
     // TODO: replace with a secure method
     // Initializing a nonce for random numbers in development
@@ -46,6 +47,15 @@ contract Salty is
 
     mapping(uint256 => address) public shipToOwner;
     mapping(address => uint256[]) public userOwnedShips;
+
+    // This should be in Voyage.sol but can't yet:
+    // https://github.com/ethereum/solidity/pull/10996
+    event VoyageComplete(
+        address account,
+        uint256 ship,
+        bool success,
+        uint8 reward
+    );
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() initializer {
@@ -67,8 +77,8 @@ contract Salty is
         _setupRole(MINTER_ROLE, msg.sender);
 
         //  Give all the resources to the origin account
+        mint(msg.sender, DOUBLOON, 10**6, "");
         mint(msg.sender, WOOD, 10**6, "");
-        mint(msg.sender, TAR, 10**6, "");
     }
 
     function minter() private view returns (address) {
@@ -80,23 +90,18 @@ contract Salty is
         onlyRole(MINTER_ROLE)
     {
         console.log(_playerAccount, "XFER");
+        safeTransferFrom(msg.sender, _playerAccount, DOUBLOON, 15000, "");
         safeTransferFrom(msg.sender, _playerAccount, WOOD, 15000, "");
-
-        safeTransferFrom(msg.sender, _playerAccount, TAR, 15000, "");
     }
 
     // Game functions
 
-    function buildShip(
-        address _account,
-        uint256 _tar,
-        uint256 _wood
-    ) public {
+    function buildShip(address _account, uint256 _wood) public {
         // TODO: require and consume wood from caller
         console.log(_account, "ACCOUNT");
         console.log(minter(), "MINT");
 
-        removeShipMaterials(_account, _tar, _wood);
+        removeShipMaterials(_account, _wood);
 
         ships.push(Ship(randMod()));
         uint256 id = ships.length - 1;
@@ -104,13 +109,24 @@ contract Salty is
         userOwnedShips[_account].push(id);
     }
 
-    function removeShipMaterials(
-        address _playerAccount,
-        uint256 _tar,
-        uint256 _wood
-    ) private {
-        safeTransferFrom(_playerAccount, minter(), TAR, _tar, "");
-        safeTransferFrom(_playerAccount, minter(), WOOD, _wood, "");
+    function embark(address _account, uint256 _ship) public {
+        // TODO: ship must belong to account
+
+        // random luck for outcomes of trip
+        uint256 luckRoll = uint256(keccak256(abi.encodePacked(randNonce)));
+
+        uint8 dubEarned = Voyage.voyage(luckRoll);
+        if (dubEarned > 0) {
+            safeTransferFrom(minter(), _account, DOUBLOON, dubEarned, "");
+            emit VoyageComplete(_account, _ship, true, dubEarned);
+            return;
+        }
+
+        emit VoyageComplete(_account, _ship, false, 0);
+    }
+
+    function removeShipMaterials(address _account, uint256 _wood) private {
+        safeTransferFrom(_account, minter(), WOOD, _wood, "");
     }
 
     function userShips(address _account)
@@ -121,8 +137,8 @@ contract Salty is
         return userOwnedShips[_account];
     }
 
-    function tar(address _account) public view returns (uint256) {
-        return balanceOf(_account, TAR);
+    function doubloons(address _account) public view returns (uint256) {
+        return balanceOf(_account, DOUBLOON);
     }
 
     function wood(address _account) public view returns (uint256) {

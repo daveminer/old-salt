@@ -9,6 +9,7 @@ interface EthereumContextInterface {
   contract: ethers.Contract | undefined,
   currentAccount: string | undefined,
   disconnectWallet: Function,
+  embark: Function,
   ships: Function,
   userInventory: Function
 }
@@ -38,7 +39,21 @@ export const EthereumProvider = ({ children }: any) => {
     if (contract === undefined) {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
 
+      const filter = {}
+      // provider.on(filter, (log, event) => {
+      //   console.log(log, "CHAIN EVENT LOG");
+      //   console.info(event, "CHAIN EVENT");
+      // })
+
       const contract = new ethers.Contract(contractAddress, Salty.abi, provider.getSigner());
+
+      console.log(contract.interface, "IIII");
+      contract.on('VoyageComplete', (account, ship, success, reward) => {
+        console.log(account, "ACCOUNT");
+        console.log(ship, "SHIP");
+        console.log(success, "SUCCESS");
+        console.log(reward, "REWARD");
+      })
 
       setContract(contract)
     }
@@ -48,11 +63,11 @@ export const EthereumProvider = ({ children }: any) => {
     }
   })
 
-  const buildShip = async ({ tar, wood }: BuildShipInput) => {
+  const buildShip = async ({ wood }: BuildShipInput) => {
     try {
       if (!ethereum) return alert("Please install MetaMask.");
 
-      let result = await contract.buildShip(currentAccount, tar, wood);
+      let result = await contract.buildShip(currentAccount, wood);
 
       return result;
     } catch (error) {
@@ -87,6 +102,19 @@ export const EthereumProvider = ({ children }: any) => {
     }
   };
 
+  const embark = async () => {
+    try {
+      if (!ethereum) return alert("Please install MetaMask.");
+
+      const embarkResult = await contract.embark(currentAccount, 0);
+
+    } catch (error) {
+      console.log(error);
+
+      throw new Error("No ethereum object");
+    }
+  };
+
   const ships = async () => {
     try {
       if (!ethereum) return alert("Please install MetaMask.");
@@ -109,12 +137,12 @@ export const EthereumProvider = ({ children }: any) => {
 
   const userInventory = async () => {
     try {
-      let tar = await contract.tar(currentAccount);
+      let doubloons = await contract.doubloons(currentAccount);
       let wood = await contract.wood(currentAccount);
-      console.log(tar.toNumber(), "TAR");
+      console.log(doubloons.toNumber(), "DOUBLOONS");
       console.log(wood.toNumber(), "WOOD");
 
-      return { tar, wood }
+      return { doubloons, wood }
     } catch (error) {
       console.log(error);
 
@@ -130,6 +158,7 @@ export const EthereumProvider = ({ children }: any) => {
         contract,
         currentAccount,
         disconnectWallet,
+        embark,
         ships,
         userInventory
       }}

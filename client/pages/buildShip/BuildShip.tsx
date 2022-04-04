@@ -46,7 +46,6 @@ const BuildShip = ({
           <ModalContent>
             <Formik
               initialValues={{
-                tar: '3',
                 wood: '10'
               }}
               validate={values => {
@@ -62,7 +61,7 @@ const BuildShip = ({
                 return errors;
               }}
               onSubmit={async (values, actions) => {
-                const buildResult = await buildShip({ tar: values.tar, wood: values.wood });
+                const buildResult = await buildShip({ wood: values.wood });
                 console.log(buildResult, "BUILDRES")
 
                 const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -90,17 +89,6 @@ const BuildShip = ({
                     <Field name="wood">
                       {({ field, form }: any) => (
                         <NumberInput {...field} allowMouseWheel defaultValue={10} min={10} max={1000000}>
-                          <NumberInputField />
-                          <NumberInputStepper>
-                            <NumberIncrementStepper />
-                            <NumberDecrementStepper />
-                          </NumberInputStepper>
-                        </NumberInput>
-                      )}
-                    </Field>
-                    <Field name="tar">
-                      {({ field, form }: any) => (
-                        <NumberInput {...field} allowMouseWheel defaultValue={3} min={3} max={1000000}>
                           <NumberInputField />
                           <NumberInputStepper>
                             <NumberIncrementStepper />

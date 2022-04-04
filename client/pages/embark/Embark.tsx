@@ -58,7 +58,7 @@ const Embark = ({
               }}
               onSubmit={async (values, actions) => {
 
-                const voyageResult = await embark({ destination: "", ship: values.ship });
+                const voyageResult = await embark({ ship: values.ship });
                 //console.log(buildResult, "BUILDRES")
 
                 const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -94,10 +94,9 @@ const Embark = ({
                           {
                             ships.map((ship) => {
                               return (
-                                <option value={`${ship}`}>{`${ship}`}</option>
+                                <option key={`${ship}`} value={`${ship}`}>{`${ship}`}</option>
                               )
                             })
-
                           }
                         </Select>
                       )}

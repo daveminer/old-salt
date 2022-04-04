@@ -19,7 +19,7 @@ const InventoryPane = ({ inventory, setInventory }: InventoryPaneProps) => {
     let response = await userInventory(account);
 
     setInventory({
-      tar: response.tar.toNumber(),
+      doubloons: response.doubloons.toNumber(),
       wood: response.wood.toNumber()
     });
   }, [currentAccount]);
@@ -32,29 +32,20 @@ const InventoryPane = ({ inventory, setInventory }: InventoryPaneProps) => {
     <>
       <Tag
         size='lg'
+        colorScheme='yellow'
+        borderRadius='full'
+        verticalAlign={'middle'}
+      >
+        Doubloons: {inventory.doubloons}
+      </Tag>
+      <Tag
+        marginLeft={4}
+        size='lg'
         colorScheme='green'
         borderRadius='full'
         verticalAlign={'middle'}
       >
         Wood: {inventory.wood}
-      </Tag>
-      <Tag
-        marginLeft={4}
-        size='lg'
-        colorScheme='blackAlpha'
-        borderRadius='full'
-        verticalAlign={'middle'}
-      >
-        Tar: {inventory.tar}
-      </Tag>
-      <Tag
-        marginLeft={4}
-        size='lg'
-        colorScheme='yellow'
-        borderRadius='full'
-        verticalAlign={'middle'}
-      >
-        Gold: {'00'}
       </Tag>
     </>
   )

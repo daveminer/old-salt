@@ -26,7 +26,7 @@ export enum GameScreen {
 }
 
 export interface Inventory {
-  tar: Number,
+  doubloons: Number,
   wood: Number
 }
 
