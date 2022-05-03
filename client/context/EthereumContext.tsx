@@ -4,7 +4,9 @@ import React, { useEffect, useState } from "react";
 import Salty from "../../artifacts/contracts/Salty.sol/Salty.json"
 
 interface EthereumContextInterface {
+  //approveAll: Function,
   buildShip: Function,
+  //checkApproval: Function,
   connectWallet: Function,
   contract: ethers.Contract | undefined,
   currentAccount: string | undefined,
@@ -47,13 +49,6 @@ export const EthereumProvider = ({ children }: any) => {
 
       const contract = new ethers.Contract(contractAddress, Salty.abi, provider.getSigner());
 
-      console.log(contract.interface, "IIII");
-      contract.on('VoyageComplete', (account, ship, success, reward) => {
-        console.log(account, "ACCOUNT");
-        console.log(ship, "SHIP");
-        console.log(success, "SUCCESS");
-        console.log(reward, "REWARD");
-      })
 
       setContract(contract)
     }
@@ -62,6 +57,19 @@ export const EthereumProvider = ({ children }: any) => {
       setEthereum(window.ethereum);
     }
   })
+
+  // const approveAll = async () => {
+  //   try {
+  //     if (!ethereum) return alert("Please install MetaMask.");
+
+  //     await contract.approveAll();
+  //   } catch (error) {
+  //     console.log(error);
+
+  //     throw new Error("No ethereum object");
+  //   }
+  // }
+
 
   const buildShip = async ({ wood }: BuildShipInput) => {
     try {
@@ -76,6 +84,20 @@ export const EthereumProvider = ({ children }: any) => {
       throw new Error("No ethereum object");
     }
   }
+
+  // const checkApproval = async () => {
+  //   try {
+  //     if (!ethereum) return alert("Please install MetaMask.");
+
+  //     let result = await contract.checkApproval();
+
+  //     return result;
+  //   } catch (error) {
+  //     console.log(error);
+
+  //     throw new Error("No ethereum object");
+  //   }
+  // }
 
   const connectWallet = async () => {
     try {
@@ -114,7 +136,6 @@ export const EthereumProvider = ({ children }: any) => {
       throw new Error("No ethereum object");
     }
   };
-
   const ships = async () => {
     try {
       if (!ethereum) return alert("Please install MetaMask.");
@@ -153,7 +174,9 @@ export const EthereumProvider = ({ children }: any) => {
   return (
     <EthereumContext.Provider
       value={{
+        //approveAll,
         buildShip,
+        //checkApproval,
         connectWallet,
         contract,
         currentAccount,

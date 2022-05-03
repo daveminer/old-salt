@@ -62,7 +62,6 @@ const BuildShip = ({
               }}
               onSubmit={async (values, actions) => {
                 const buildResult = await buildShip({ wood: values.wood });
-                console.log(buildResult, "BUILDRES")
 
                 const provider = new ethers.providers.Web3Provider(window.ethereum);
 

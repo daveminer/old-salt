@@ -8,7 +8,7 @@ const Landing = () =>
   >
     <VStack >
       <Heading marginBottom={12} size='2xl'>Old Salt</Heading>
-      <Heading size='md'>A high seas NFT adventure.</Heading>
+      <Heading size='md'>A high seas NFT adventure</Heading>
     </VStack>
   </Center>
 

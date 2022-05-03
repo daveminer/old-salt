@@ -24,6 +24,8 @@ async function main() {
     "0x598aD9cA8F77815C1A1b0eABEBeB26859d1828A3"
   );
 
+  //await oldSalt.approveAll("0x598aD9cA8F77815C1A1b0eABEBeB26859d1828A3");
+
   console.log("Old Salt deployed to:", oldSalt.address);
   console.log("Put this address into the CONTRACT_ADDRESS env var.");
 }
