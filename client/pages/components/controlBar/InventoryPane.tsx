@@ -3,7 +3,7 @@ import React, { useCallback, useContext, useEffect } from "react"
 import { EthereumContext } from '../../../context/EthereumContext'
 import { Inventory } from '../../index'
 
-import { Tag } from '@chakra-ui/react'
+import InventoryTag from './InventoryTag'
 
 interface InventoryPaneProps {
   inventory: Inventory
@@ -18,12 +18,25 @@ const InventoryPane = ({ inventory, setInventory }: InventoryPaneProps) => {
     let response = await userInventory(account)
 
     setInventory({
-      gold: response.doubloons.toNumber(),
+      crew: response.crew.toNumber(),
+      food: response.food.toNumber(),
+      furs: response.furs.toNumber(),
+      gold: response.gold.toNumber(),
+      iron: response.iron.toNumber(),
+      porcelain: response.porcelain.toNumber(),
+      spice: response.spice.toNumber(),
       wood: response.wood.toNumber()
+
     })
   }, [currentAccount, inventory])
 
-  const voyageCompleteListener = (account: string, ship: string, success: boolean, reward: number, event: any) => {
+  const voyageCompleteListener = (
+    account: string,
+    ship: string,
+    success: boolean,
+    reward: number,
+    event: any
+  ) => {
     //console.log(account, "ACCOUNT");
     //console.log(ship, "SHIP");
     //console.log(success, "SUCCESS");
@@ -33,9 +46,7 @@ const InventoryPane = ({ inventory, setInventory }: InventoryPaneProps) => {
     // const newTotal = reward + inventory.doubloons;
     // console.log(newTotal, "NEWTOT")
 
-
     // setInventory({ ...inventory, doubloons: newTotal })
-
 
     // TODO: this should pull from local state instead
     fetchInventory(currentAccount)
@@ -44,8 +55,6 @@ const InventoryPane = ({ inventory, setInventory }: InventoryPaneProps) => {
   useEffect(() => {
     fetchInventory(currentAccount)
 
-    console.log(inventory, "INV")
-
     contract.on('VoyageComplete', voyageCompleteListener)
 
     return () => { contract.off('VoyageComplete', voyageCompleteListener) }
@@ -53,27 +62,14 @@ const InventoryPane = ({ inventory, setInventory }: InventoryPaneProps) => {
 
   return (
     <>
-      <Tag
-        background='yellow'
-        size='lg'
-        verticalAlign={'middle'}
-      >
-        Gold: {inventory.gold}
-      </Tag>
-      <Tag
-        background='brown'
-        size='lg'
-        verticalAlign={'middle'}
-      >
-        Wood: {inventory.wood}
-      </Tag>
-      <Tag
-        background='white'
-        size='lg'
-        verticalAlign={'middle'}
-      >
-        Porcelain: {inventory.porcelain}
-      </Tag>
+      <InventoryTag bgColor='lightBlue' label='crew' value={inventory.crew} />
+      <InventoryTag bgColor='green' label='food' value={inventory.crew} />
+      <InventoryTag bgColor='grey' label='furs' value={inventory.crew} />
+      <InventoryTag bgColor='yellow' label='gold' value={inventory.crew} />
+      <InventoryTag bgColor='red' label='iron' value={inventory.crew} />
+      <InventoryTag bgColor='white' label='porcelain' value={inventory.crew} />
+      <InventoryTag bgColor='orange' label='spice' value={inventory.crew} />
+      <InventoryTag bgColor='brown' label='wood' value={inventory.crew} />
     </>
   )
 }

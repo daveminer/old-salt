@@ -1,4 +1,4 @@
-import { useContext, useCallback, useEffect } from "react"
+import { useContext, useState } from "react"
 import {
   Box,
   Button,
@@ -9,12 +9,17 @@ import {
   ModalBody,
   ModalCloseButton,
   Select,
+  Slider,
+  SliderTrack,
+  SliderFilledTrack,
+  SliderThumb,
+  Text
 } from '@chakra-ui/react'
 import { Field, Form, Formik } from 'formik'
 
 import { ethers } from "ethers"
 import { EthereumContext } from '../../../context/EthereumContext'
-
+import LabelledSlider from '../form/LabelledSlider'
 
 interface EmbarkProps {
   currentAccount: string | undefined
@@ -33,6 +38,10 @@ const Embark = ({
   ships
 }: EmbarkProps) => {
   const { embark } = useContext(EthereumContext)
+
+  const [crewCount, setCrewCount] = useState(0)
+  const [foodCount, setFoodCount] = useState(0)
+  const [porcelainCount, setPorcelainCount] = useState(0)
 
   return (
     <>
@@ -90,6 +99,7 @@ const Embark = ({
                         <Select
                           {...field}
                           placeholder='Select vessel...'
+                          marginBottom="2rem"
                         >
                           {
                             ships.map((ship: any) => {
@@ -102,6 +112,21 @@ const Embark = ({
                         </Select>
                       )}
                     </Field>
+                    <LabelledSlider
+                      label='crew'
+                      max={1000}
+                      setValue={setCrewCount}
+                    />
+                    <LabelledSlider
+                      label='food'
+                      max={10000}
+                      setValue={setFoodCount}
+                    />
+                    <LabelledSlider
+                      label='food'
+                      max={10000}
+                      setValue={setPorcelainCount}
+                    />
                   </ModalBody>
                   <ModalFooter>
                     <Button type='submit'>

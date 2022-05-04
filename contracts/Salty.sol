@@ -33,14 +33,15 @@ contract Salty is
 
     // Fungibles start their index at 1
     uint256 public constant CREW = 1 << 128;
-    uint256 public constant GOLD = 2 << 128;
-    uint256 public constant WOOD = 3 << 128;
-    uint256 public constant FOOD = 4 << 128;
+    uint256 public constant FOOD = 2 << 128;
+    uint256 public constant FURS = 3 << 128;
+    uint256 public constant GOLD = 4 << 128;
     uint256 public constant IRON = 5 << 128;
     uint256 public constant PORCELAIN = 6 << 128;
     uint256 public constant SPICE = 7 << 128;
-    uint256 public constant IRON_SHOT = 8 << 128;
-    uint256 public constant STONE_SHOT = 9 << 128;
+    uint256 public constant WOOD = 8 << 128;
+    uint256 public constant IRON_SHOT = 9 << 128;
+    uint256 public constant STONE_SHOT = 10 << 128;
 
     // TODO: replace with a secure method
     // Initializing a nonce for random numbers in development
@@ -86,12 +87,13 @@ contract Salty is
 
         //  Give all the resources to the origin account
         mint(msg.sender, CREW, 10**6, "");
-        mint(msg.sender, GOLD, 10**6, "");
         mint(msg.sender, FOOD, 10**6, "");
-        mint(msg.sender, WOOD, 10**6, "");
+        mint(msg.sender, FURS, 10**6, "");
+        mint(msg.sender, GOLD, 10**6, "");
         mint(msg.sender, IRON, 10**6, "");
         mint(msg.sender, PORCELAIN, 10**6, "");
         mint(msg.sender, SPICE, 10**6, "");
+        mint(msg.sender, WOOD, 10**6, "");
         mint(msg.sender, IRON_SHOT, 10**6, "");
         mint(msg.sender, STONE_SHOT, 10**6, "");
     }
@@ -104,14 +106,14 @@ contract Salty is
         public
         onlyRole(MINTER_ROLE)
     {
-        console.log(_playerAccount, "XFER");
         safeTransferFrom(msg.sender, _playerAccount, CREW, 15000, "");
-        safeTransferFrom(msg.sender, _playerAccount, GOLD, 15000, "");
         safeTransferFrom(msg.sender, _playerAccount, FOOD, 15000, "");
-        safeTransferFrom(msg.sender, _playerAccount, WOOD, 15000, "");
+        safeTransferFrom(msg.sender, _playerAccount, FURS, 15000, "");
+        safeTransferFrom(msg.sender, _playerAccount, GOLD, 15000, "");
         safeTransferFrom(msg.sender, _playerAccount, IRON, 15000, "");
         safeTransferFrom(msg.sender, _playerAccount, PORCELAIN, 15000, "");
         safeTransferFrom(msg.sender, _playerAccount, SPICE, 15000, "");
+        safeTransferFrom(msg.sender, _playerAccount, WOOD, 15000, "");
         safeTransferFrom(msg.sender, _playerAccount, IRON_SHOT, 15000, "");
         safeTransferFrom(msg.sender, _playerAccount, STONE_SHOT, 15000, "");
     }
@@ -174,8 +176,32 @@ contract Salty is
         return userOwnedShips[_account];
     }
 
-    function doubloons(address _account) public view returns (uint256) {
+    function crew(address _account) public view returns (uint256) {
+        return balanceOf(_account, CREW);
+    }
+
+    function food(address _account) public view returns (uint256) {
+        return balanceOf(_account, FOOD);
+    }
+
+    function furs(address _account) public view returns (uint256) {
+        return balanceOf(_account, FURS);
+    }
+
+    function gold(address _account) public view returns (uint256) {
         return balanceOf(_account, GOLD);
+    }
+
+    function iron(address _account) public view returns (uint256) {
+        return balanceOf(_account, IRON);
+    }
+
+    function porcelain(address _account) public view returns (uint256) {
+        return balanceOf(_account, PORCELAIN);
+    }
+
+    function spice(address _account) public view returns (uint256) {
+        return balanceOf(_account, SPICE);
     }
 
     function wood(address _account) public view returns (uint256) {

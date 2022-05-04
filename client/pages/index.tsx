@@ -24,9 +24,25 @@ export enum GameScreen {
 }
 
 export interface Inventory {
+  crew: number,
+  food: number,
+  furs: number,
   gold: number,
+  iron: number,
   porcelain: number,
+  spice: number,
   wood: number
+}
+
+const newInventory = {
+  crew: 0,
+  food: 0,
+  furs: 0,
+  gold: 0,
+  iron: 0,
+  porcelain: 0,
+  spice: 0,
+  wood: 0
 }
 
 const OldSalt: NextPage = () => {
@@ -34,7 +50,7 @@ const OldSalt: NextPage = () => {
 
   const [currentCity, setCurrentCity] = useState<string | undefined>(undefined)
   const [currentScreen, setCurrentScreen] = useState<GameScreen>(GameScreen.Landing)
-  const [inventory, setInventory] = useState<Inventory>({ doubloons: 0, wood: 0 })
+  const [inventory, setInventory] = useState<Inventory>(newInventory)
   const [txInProgress, setTxInProgress] = useState<boolean>(false)
   const [userShips, setUserShips] = useState<any[]>([])
 

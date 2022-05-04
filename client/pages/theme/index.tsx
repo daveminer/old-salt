@@ -3,9 +3,10 @@ import { extendTheme } from '@chakra-ui/react'
 import "@fontsource/trade-winds"
 
 import Button from './Button'
+import Modal from './Modal'
 import Tag from './Tag'
 
-const colors = {
+export const colors = {
   background: '#E9E5C0',
 }
 
@@ -15,9 +16,9 @@ const config = {
 }
 
 const theme = extendTheme({
-  borderRadius: "0px",
   colors, components: {
     Button,
+    Modal,
     Tag
   }, config,
   fonts: {

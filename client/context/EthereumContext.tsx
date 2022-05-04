@@ -17,7 +17,6 @@ interface EthereumContextInterface {
 }
 
 interface BuildShipInput {
-  tar: Number,
   wood: Number
 }
 
@@ -162,12 +161,25 @@ export const EthereumProvider = ({ children }: any) => {
 
   const userInventory = async () => {
     try {
-      let doubloons = await contract.doubloons(currentAccount)
+      let crew = await contract.crew(currentAccount)
+      let food = await contract.food(currentAccount)
+      let furs = await contract.food(currentAccount)
+      let gold = await contract.gold(currentAccount)
+      let iron = await contract.iron(currentAccount)
+      let porcelain = await contract.porcelain(currentAccount)
+      let spice = await contract.spice(currentAccount)
       let wood = await contract.wood(currentAccount)
-      console.log(doubloons.toNumber(), "DOUBLOONS")
-      console.log(wood.toNumber(), "WOOD")
 
-      return { doubloons, wood }
+      return {
+        crew,
+        food,
+        furs,
+        gold,
+        iron,
+        porcelain,
+        spice,
+        wood
+      }
     } catch (error) {
       console.log(error)
 
