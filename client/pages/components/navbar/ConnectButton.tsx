@@ -1,9 +1,10 @@
 import {
   Box,
   Button,
-  Spinner
-} from '@chakra-ui/react';
-import { GameScreen } from '..';
+  Spinner,
+  Text
+} from '@chakra-ui/react'
+import { GameScreen } from '../..'
 
 interface ConnectButtonProps {
   connectWallet: Function,
@@ -23,10 +24,9 @@ const ConnectButton = ({
   if (!currentAccount) {
     return (
       <Button
-        colorScheme='blue'
         onClick={async () => {
-          await connectWallet();
-          setScreen(GameScreen.Shipyard);
+          await connectWallet()
+          setScreen(GameScreen.Shipyard)
         }}
       >
         Connect wallet
@@ -37,13 +37,13 @@ const ConnectButton = ({
   if (txInProgress) {
     return (
       <>
-        <Box className="">
+        <Box>
           Account: {currentAccount}
         </Box>
-        <Button colorScheme='blue'
+        <Button
           onClick={async () => {
-            await disconnectWallet();
-            setScreen(GameScreen.Landing);
+            await disconnectWallet()
+            setScreen(GameScreen.Landing)
           }}
         >
           <Spinner
@@ -57,13 +57,13 @@ const ConnectButton = ({
 
   return (
     <>
-      <Box className="">
+      <Text>
         Account: {currentAccount}
-      </Box>
-      <Button colorScheme='blue'
+      </Text>
+      <Button
         onClick={() => {
-          setScreen(GameScreen.Landing);
-          disconnectWallet();
+          setScreen(GameScreen.Landing)
+          disconnectWallet()
         }}
       >
         Disconnect wallet
@@ -72,4 +72,4 @@ const ConnectButton = ({
   )
 }
 
-export default ConnectButton;
+export default ConnectButton

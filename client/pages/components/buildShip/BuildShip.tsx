@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext } from "react"
 import {
   Box,
   Button,
@@ -14,10 +14,10 @@ import {
   NumberInputField,
   NumberInputStepper
 } from '@chakra-ui/react'
-import { Field, Form, Formik } from 'formik';
+import { Field, Form, Formik } from 'formik'
 
-import { ethers } from "ethers";
-import { EthereumContext } from '../../context/EthereumContext'
+import { ethers } from "ethers"
+import { EthereumContext } from '../../../context/EthereumContext'
 
 
 interface BuildShipProps {
@@ -36,7 +36,7 @@ const BuildShip = ({
   setTxInProgress,
   setUserShips
 }: BuildShipProps) => {
-  const { buildShip, ships } = useContext(EthereumContext);
+  const { buildShip, ships } = useContext(EthereumContext)
 
   return (
     <>
@@ -49,8 +49,8 @@ const BuildShip = ({
                 wood: '10'
               }}
               validate={values => {
-                console.log(values, "VALIDATE");
-                const errors = {};
+                console.log(values, "VALIDATE")
+                const errors = {}
                 // if (!values.tar) {
                 //   errors.tar = 'Required';
                 // } else if (
@@ -58,24 +58,25 @@ const BuildShip = ({
                 // ) {
                 //   errors.tar = 'Invalid email address';
                 // }
-                return errors;
+                return errors
               }}
               onSubmit={async (values, actions) => {
-                const buildResult = await buildShip({ wood: values.wood });
+                const buildResult = await buildShip({ wood: values.wood })
 
-                const provider = new ethers.providers.Web3Provider(window.ethereum);
+                const provider = new ethers.providers.Web3Provider(window.ethereum)
 
                 provider.once(buildResult.hash, async (tx) => {
-                  setTxInProgress(false);
+                  setTxInProgress(false)
                   console.log(`${tx.toString()} has been mined.`)
                   // TODO: show new NFT details
-                  let response = await ships(currentAccount);
+                  let response = await ships(currentAccount)
 
-                  setUserShips(response.map((bigInt: any) => bigInt.toBigInt()));
+                  console.log(response, "RESPONSE")
+                  //setUserShips(response.map((ship: any) => ship))
                 })
 
-                setTxInProgress(true);
-                onClose();
+                setTxInProgress(true)
+                onClose()
               }}
             >
               {(_props) => (
@@ -112,4 +113,4 @@ const BuildShip = ({
   )
 }
 
-export default BuildShip;
+export default BuildShip

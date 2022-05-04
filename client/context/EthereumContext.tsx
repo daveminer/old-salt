@@ -1,5 +1,5 @@
-import { ethers } from "ethers";
-import React, { useEffect, useState } from "react";
+import { ethers } from "ethers"
+import React, { useEffect, useState } from "react"
 
 import Salty from "../../artifacts/contracts/Salty.sol/Salty.json"
 
@@ -21,25 +21,25 @@ interface BuildShipInput {
   wood: Number
 }
 
-const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
+const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS
 
 export const EthereumContext =
-  React.createContext<EthereumContextInterface>({} as EthereumContextInterface);
+  React.createContext<EthereumContextInterface>({} as EthereumContextInterface)
 
 export const EthereumProvider = ({ children }: any) => {
-  const [contract, setContract] = useState<any>();
-  const [ethereum, setEthereum] = useState<any>();
-  const [currentAccount, setCurrentAccount] = useState<string | undefined>(undefined);
+  const [contract, setContract] = useState<any>()
+  const [ethereum, setEthereum] = useState<any>()
+  const [currentAccount, setCurrentAccount] = useState<string | undefined>(undefined)
 
   useEffect(() => {
-    if (window.ethereum === undefined) return;
+    if (window.ethereum === undefined) return
     if (contractAddress === undefined) {
-      console.error("CONTRACT_ADDRESS is undefined.");
-      return;
+      console.error("CONTRACT_ADDRESS is undefined.")
+      return
     }
 
     if (contract === undefined) {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const provider = new ethers.providers.Web3Provider(window.ethereum)
 
       const filter = {}
       // provider.on(filter, (log, event) => {
@@ -47,14 +47,14 @@ export const EthereumProvider = ({ children }: any) => {
       //   console.info(event, "CHAIN EVENT");
       // })
 
-      const contract = new ethers.Contract(contractAddress, Salty.abi, provider.getSigner());
+      const contract = new ethers.Contract(contractAddress, Salty.abi, provider.getSigner())
 
 
       setContract(contract)
     }
 
     if (ethereum === undefined) {
-      setEthereum(window.ethereum);
+      setEthereum(window.ethereum)
     }
   })
 
@@ -73,15 +73,15 @@ export const EthereumProvider = ({ children }: any) => {
 
   const buildShip = async ({ wood }: BuildShipInput) => {
     try {
-      if (!ethereum) return alert("Please install MetaMask.");
+      if (!ethereum) return alert("Please install MetaMask.")
 
-      let result = await contract.buildShip(currentAccount, wood);
+      let result = await contract.buildShip(currentAccount, wood)
 
-      return result;
+      return result
     } catch (error) {
-      console.log(error);
+      console.log(error)
 
-      throw new Error("No ethereum object");
+      throw new Error("No ethereum object")
     }
   }
 
@@ -101,73 +101,77 @@ export const EthereumProvider = ({ children }: any) => {
 
   const connectWallet = async () => {
     try {
-      if (!ethereum) return alert("Please install MetaMask.");
+      if (!ethereum) return alert("Please install MetaMask.")
 
-      const accounts = await ethereum.request({ method: "eth_requestAccounts", });
+      const accounts = await ethereum.request({ method: "eth_requestAccounts", })
 
-      setCurrentAccount(accounts[0]);
+      setCurrentAccount(accounts[0])
     } catch (error) {
-      console.log(error);
+      console.log(error)
 
-      throw new Error("No ethereum object");
+      throw new Error("No ethereum object")
     }
-  };
+  }
 
   const disconnectWallet = async () => {
     try {
-      if (!ethereum) return alert("Please install MetaMask.");
-      setCurrentAccount(undefined);
+      if (!ethereum) return alert("Please install MetaMask.")
+      setCurrentAccount(undefined)
     } catch (error) {
-      console.log(error);
+      console.log(error)
 
-      throw new Error("No ethereum object");
+      throw new Error("No ethereum object")
     }
-  };
+  }
 
-  const embark = async () => {
+  const embark = async ({ shipIndex: shipIndex }: any) => {
     try {
-      if (!ethereum) return alert("Please install MetaMask.");
+      if (!ethereum) return alert("Please install MetaMask.")
 
-      const embarkResult = await contract.embark(currentAccount, 0);
+      const embarkResult = await contract.embark(currentAccount, shipIndex)
 
     } catch (error) {
-      console.log(error);
+      console.log(error)
 
-      throw new Error("No ethereum object");
+      throw new Error("No ethereum object")
     }
-  };
+  }
   const ships = async () => {
     try {
-      if (!ethereum) return alert("Please install MetaMask.");
+      if (!ethereum) return alert("Please install MetaMask.")
 
-      let shipIds = await contract.userShips(currentAccount);
+      let shipIds = await contract.userShips(currentAccount)
 
-      let ships = [];
+      let ships = []
       for (let shipId in shipIds) {
-        let shipSignature = await contract.ships(shipId.toString());
-        ships.push(shipSignature);
+        console.log(shipId, "SHIPID")
+        let shipSignature = await contract.ships(shipId.toString())
+        let shipWithId = { shipIndex: shipId, ...shipSignature }
+        console.log(shipSignature, "SHIPSIG")
+        console.log(shipWithId, "SHIPPPPP")
+        ships.push(shipWithId)
       }
 
-      return ships;
+      return ships
     } catch (error) {
-      console.log(error);
+      console.log(error)
 
-      throw new Error("No ethereum object");
+      throw new Error("No ethereum object")
     }
-  };
+  }
 
   const userInventory = async () => {
     try {
-      let doubloons = await contract.doubloons(currentAccount);
-      let wood = await contract.wood(currentAccount);
-      console.log(doubloons.toNumber(), "DOUBLOONS");
-      console.log(wood.toNumber(), "WOOD");
+      let doubloons = await contract.doubloons(currentAccount)
+      let wood = await contract.wood(currentAccount)
+      console.log(doubloons.toNumber(), "DOUBLOONS")
+      console.log(wood.toNumber(), "WOOD")
 
       return { doubloons, wood }
     } catch (error) {
-      console.log(error);
+      console.log(error)
 
-      throw new Error("No ethereum object");
+      throw new Error("No ethereum object")
     }
   }
 
@@ -188,5 +192,5 @@ export const EthereumProvider = ({ children }: any) => {
     >
       {children}
     </EthereumContext.Provider>
-  );
+  )
 }

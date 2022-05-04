@@ -1,11 +1,11 @@
-import React, { useContext } from "react";
-import { EthereumContext } from '../../context/EthereumContext'
+import React, { useContext } from "react"
+import { EthereumContext } from '../../../context/EthereumContext'
 import {
   Box,
   HStack,
   Text
-} from '@chakra-ui/react';
-import ConnectButton from "./ConnectButton";
+} from '@chakra-ui/react'
+import ConnectButton from './ConnectButton'
 
 type NavbarProps = {
   currentAccount: string | undefined,
@@ -14,7 +14,7 @@ type NavbarProps = {
 }
 
 const Navbar = ({ currentAccount, setScreen, txInProgress }: NavbarProps) => {
-  const { connectWallet, disconnectWallet } = useContext(EthereumContext);
+  const { connectWallet, disconnectWallet } = useContext(EthereumContext)
 
   return (
     <HStack
@@ -41,4 +41,4 @@ const Navbar = ({ currentAccount, setScreen, txInProgress }: NavbarProps) => {
   )
 }
 
-export default Navbar;
+export default Navbar

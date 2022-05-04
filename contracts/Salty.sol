@@ -32,8 +32,15 @@ contract Salty is
     // balanceOf(baseTokenNFT + indexNFT, msg.sender);
 
     // Fungibles start their index at 1
-    uint256 public constant DOUBLOON = 1 << 128;
-    uint256 public constant WOOD = 2 << 128;
+    uint256 public constant CREW = 1 << 128;
+    uint256 public constant GOLD = 2 << 128;
+    uint256 public constant WOOD = 3 << 128;
+    uint256 public constant FOOD = 4 << 128;
+    uint256 public constant IRON = 5 << 128;
+    uint256 public constant PORCELAIN = 6 << 128;
+    uint256 public constant SPICE = 7 << 128;
+    uint256 public constant IRON_SHOT = 8 << 128;
+    uint256 public constant STONE_SHOT = 9 << 128;
 
     // TODO: replace with a secure method
     // Initializing a nonce for random numbers in development
@@ -41,6 +48,7 @@ contract Salty is
 
     struct Ship {
         uint256 signature;
+        uint256 sunk_at;
     }
 
     Ship[] public ships;
@@ -54,7 +62,7 @@ contract Salty is
         address account,
         uint256 ship,
         bool success,
-        uint8 reward
+        uint256 reward
     );
 
     /// @custom:oz-upgrades-unsafe-allow constructor
@@ -77,8 +85,15 @@ contract Salty is
         _setupRole(MINTER_ROLE, msg.sender);
 
         //  Give all the resources to the origin account
-        mint(msg.sender, DOUBLOON, 10**6, "");
+        mint(msg.sender, CREW, 10**6, "");
+        mint(msg.sender, GOLD, 10**6, "");
+        mint(msg.sender, FOOD, 10**6, "");
         mint(msg.sender, WOOD, 10**6, "");
+        mint(msg.sender, IRON, 10**6, "");
+        mint(msg.sender, PORCELAIN, 10**6, "");
+        mint(msg.sender, SPICE, 10**6, "");
+        mint(msg.sender, IRON_SHOT, 10**6, "");
+        mint(msg.sender, STONE_SHOT, 10**6, "");
     }
 
     function minter() private view returns (address) {
@@ -90,11 +105,27 @@ contract Salty is
         onlyRole(MINTER_ROLE)
     {
         console.log(_playerAccount, "XFER");
-        safeTransferFrom(msg.sender, _playerAccount, DOUBLOON, 15000, "");
+        safeTransferFrom(msg.sender, _playerAccount, CREW, 15000, "");
+        safeTransferFrom(msg.sender, _playerAccount, GOLD, 15000, "");
+        safeTransferFrom(msg.sender, _playerAccount, FOOD, 15000, "");
         safeTransferFrom(msg.sender, _playerAccount, WOOD, 15000, "");
+        safeTransferFrom(msg.sender, _playerAccount, IRON, 15000, "");
+        safeTransferFrom(msg.sender, _playerAccount, PORCELAIN, 15000, "");
+        safeTransferFrom(msg.sender, _playerAccount, SPICE, 15000, "");
+        safeTransferFrom(msg.sender, _playerAccount, IRON_SHOT, 15000, "");
+        safeTransferFrom(msg.sender, _playerAccount, STONE_SHOT, 15000, "");
     }
 
     // Game functions
+
+    // function approveAll() public {
+    //     setApprovalForAll(minter(), true);
+    // }
+
+    // function checkApproval() public view returns (bool) {
+    //     console.log(msg.sender, "ALLOW");
+    //     return isApprovedForAll(minter(), msg.sender);
+    // }
 
     function buildShip(address _account, uint256 _wood) public {
         // TODO: require and consume wood from caller
@@ -103,7 +134,7 @@ contract Salty is
 
         removeShipMaterials(_account, _wood);
 
-        ships.push(Ship(randMod()));
+        ships.push(Ship(randMod(), 0));
         uint256 id = ships.length - 1;
         shipToOwner[id] = _account;
         userOwnedShips[_account].push(id);
@@ -111,16 +142,22 @@ contract Salty is
 
     function embark(address _account, uint256 _ship) public {
         // TODO: ship must belong to account
+        console.log(_ship, "SHIP");
 
         // random luck for outcomes of trip
         uint256 luckRoll = uint256(keccak256(abi.encodePacked(randNonce)));
+        randNonce++;
 
-        uint8 dubEarned = Voyage.voyage(luckRoll);
+        (uint256 sunk_at, uint256 dubEarned) = Voyage.voyage(luckRoll);
         if (dubEarned > 0) {
-            safeTransferFrom(minter(), _account, DOUBLOON, dubEarned, "");
+            _safeTransferFrom(minter(), _account, GOLD, dubEarned, "");
             emit VoyageComplete(_account, _ship, true, dubEarned);
             return;
         }
+
+        // this ship sunk!
+        Ship storage ship = ships[_ship];
+        ship.sunk_at = sunk_at;
 
         emit VoyageComplete(_account, _ship, false, 0);
     }
@@ -138,7 +175,7 @@ contract Salty is
     }
 
     function doubloons(address _account) public view returns (uint256) {
-        return balanceOf(_account, DOUBLOON);
+        return balanceOf(_account, GOLD);
     }
 
     function wood(address _account) public view returns (uint256) {

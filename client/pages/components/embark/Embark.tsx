@@ -1,4 +1,4 @@
-import { useContext, useCallback, useEffect } from "react";
+import { useContext, useCallback, useEffect } from "react"
 import {
   Box,
   Button,
@@ -10,10 +10,10 @@ import {
   ModalCloseButton,
   Select,
 } from '@chakra-ui/react'
-import { Field, Form, Formik } from 'formik';
+import { Field, Form, Formik } from 'formik'
 
-import { ethers } from "ethers";
-import { EthereumContext } from '../../context/EthereumContext'
+import { ethers } from "ethers"
+import { EthereumContext } from '../../../context/EthereumContext'
 
 
 interface EmbarkProps {
@@ -32,7 +32,7 @@ const Embark = ({
   setTxInProgress,
   ships
 }: EmbarkProps) => {
-  const { embark } = useContext(EthereumContext);
+  const { embark } = useContext(EthereumContext)
 
   return (
     <>
@@ -45,8 +45,8 @@ const Embark = ({
                 ship: ''
               }}
               validate={values => {
-                console.log(values, "VALIDATE");
-                const errors = {};
+                console.log(values, "VALIDATE")
+                const errors = {}
                 // if (!values.tar) {
                 //   errors.tar = 'Required';
                 // } else if (
@@ -54,14 +54,14 @@ const Embark = ({
                 // ) {
                 //   errors.tar = 'Invalid email address';
                 // }
-                return errors;
+                return errors
               }}
               onSubmit={async (values, actions) => {
-
-                const voyageResult = await embark({ ship: values.ship });
+                console.log(values, "VALUES")
+                const voyageResult = await embark({ shipIndex: values.ship })
                 //console.log(buildResult, "BUILDRES")
 
-                const provider = new ethers.providers.Web3Provider(window.ethereum);
+                const provider = new ethers.providers.Web3Provider(window.ethereum)
 
                 // provider.once(buildResult.hash, async (tx) => {
                 //   setTxInProgress(false);
@@ -72,8 +72,8 @@ const Embark = ({
                 //   setUserShips(response.map((bigInt: any) => bigInt.toBigInt()));
                 // })
 
-                setTxInProgress(true);
-                onClose();
+                setTxInProgress(true)
+                onClose()
               }}
             >
               {(_props) => (
@@ -92,9 +92,10 @@ const Embark = ({
                           placeholder='Select vessel...'
                         >
                           {
-                            ships.map((ship) => {
+                            ships.map((ship: any) => {
+                              console.log(ship, "INP")
                               return (
-                                <option key={`${ship}`} value={`${ship}`}>{`${ship}`}</option>
+                                <option key={`${ship.shipIndex}`} value={`${ship.shipIndex}`}>{`${ship.shipIndex}`}</option>
                               )
                             })
                           }
@@ -117,4 +118,4 @@ const Embark = ({
   )
 }
 
-export default Embark;
+export default Embark

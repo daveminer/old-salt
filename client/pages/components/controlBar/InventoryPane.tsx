@@ -1,11 +1,9 @@
-import React, { useCallback, useContext, useEffect } from "react";
+import React, { useCallback, useContext, useEffect } from "react"
 
-import { EthereumContext } from '../../context/EthereumContext';
-import { Inventory } from '../index';
+import { EthereumContext } from '../../../context/EthereumContext'
+import { Inventory } from '../../index'
 
-import {
-  Tag,
-} from '@chakra-ui/react'
+import { Tag } from '@chakra-ui/react'
 
 interface InventoryPaneProps {
   inventory: Inventory
@@ -13,17 +11,17 @@ interface InventoryPaneProps {
 }
 
 const InventoryPane = ({ inventory, setInventory }: InventoryPaneProps) => {
-  const { contract, currentAccount, userInventory } = useContext(EthereumContext);
-  if (!contract) throw new Error("Contract is undefined");
+  const { contract, currentAccount, userInventory } = useContext(EthereumContext)
+  if (!contract) throw new Error("Contract is undefined")
 
   const fetchInventory = useCallback(async (account) => {
-    let response = await userInventory(account);
+    let response = await userInventory(account)
 
     setInventory({
-      doubloons: response.doubloons.toNumber(),
+      gold: response.doubloons.toNumber(),
       wood: response.wood.toNumber()
-    });
-  }, [currentAccount, inventory]);
+    })
+  }, [currentAccount, inventory])
 
   const voyageCompleteListener = (account: string, ship: string, success: boolean, reward: number, event: any) => {
     //console.log(account, "ACCOUNT");
@@ -44,36 +42,40 @@ const InventoryPane = ({ inventory, setInventory }: InventoryPaneProps) => {
   }
 
   useEffect(() => {
-    fetchInventory(currentAccount);
+    fetchInventory(currentAccount)
 
     console.log(inventory, "INV")
 
     contract.on('VoyageComplete', voyageCompleteListener)
 
-    return () => { contract.off('VoyageComplete', voyageCompleteListener); }
-  }, [contract, currentAccount]);
+    return () => { contract.off('VoyageComplete', voyageCompleteListener) }
+  }, [contract, currentAccount])
 
   return (
     <>
       <Tag
+        background='yellow'
         size='lg'
-        colorScheme='yellow'
-        borderRadius='full'
         verticalAlign={'middle'}
       >
-        Doubloons: {inventory.doubloons}
+        Gold: {inventory.gold}
       </Tag>
       <Tag
-        marginLeft={4}
+        background='brown'
         size='lg'
-        colorScheme='green'
-        borderRadius='full'
         verticalAlign={'middle'}
       >
         Wood: {inventory.wood}
       </Tag>
+      <Tag
+        background='white'
+        size='lg'
+        verticalAlign={'middle'}
+      >
+        Porcelain: {inventory.porcelain}
+      </Tag>
     </>
   )
-};
+}
 
-export default InventoryPane;
+export default InventoryPane

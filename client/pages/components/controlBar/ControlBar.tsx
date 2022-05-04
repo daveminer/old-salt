@@ -1,10 +1,10 @@
-import React, { useContext } from "react";
+import React, { useContext } from "react"
 
-import { EthereumContext } from '../../context/EthereumContext';
-import { GameScreen, Inventory } from '../index';
-import BuildShip from "../buildShip/BuildShip";
-import Embark from "../embark/Embark";
-import InventoryPane from "./InventoryPane";
+import { EthereumContext } from '../../../context/EthereumContext'
+import { GameScreen, Inventory } from '../../index'
+import BuildShip from "../buildShip/BuildShip"
+import Embark from "../embark/Embark"
+import InventoryPane from "./InventoryPane"
 
 import {
   Box,
@@ -30,12 +30,12 @@ const ControlBar = ({ currentScreen,
   setUserShips,
   ships
 }: ControlBarProps) => {
-  const { currentAccount } = useContext(EthereumContext);
-  const buildShipModal = useDisclosure();
-  const embarkModal = useDisclosure();
+  const { currentAccount } = useContext(EthereumContext)
+  const buildShipModal = useDisclosure()
+  const embarkModal = useDisclosure()
 
-  const openShipModal = () => buildShipModal.onOpen();
-  const openEmbarkModal = () => embarkModal.onOpen();
+  const openShipModal = () => buildShipModal.onOpen()
+  const openEmbarkModal = () => embarkModal.onOpen()
 
   return (
     <>
@@ -77,7 +77,6 @@ const ControlBar = ({ currentScreen,
           }
           {(currentScreen !== GameScreen.Map) &&
             <Button
-              colorScheme='orange'
               onClick={() => setScreen(GameScreen.Map)}
               marginLeft='4'
             >
@@ -105,6 +104,6 @@ const ControlBar = ({ currentScreen,
       />
     </>
   )
-};
+}
 
-export default ControlBar;
+export default ControlBar

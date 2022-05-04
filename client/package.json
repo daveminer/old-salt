@@ -12,6 +12,7 @@
     "@chakra-ui/react": "^1.8.8",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
+    "@fontsource/trade-winds": "^4.5.9",
     "ethers": "^5.5.3",
     "formik": "^2.2.9",
     "framer-motion": "^6",

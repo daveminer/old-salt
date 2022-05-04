@@ -1,20 +1,20 @@
 import type { NextPage } from 'next'
-import React, { useContext, useState } from "react";
+import React, { useContext, useState } from "react"
 
-import Footer from './Footer';
-import Home from './home/Home';
-import Landing from './Landing';
-import Navbar from './navbar/Navbar';
+import Footer from './components/Footer'
+import Home from './components/Home'
+import Landing from './components/Landing'
+import Navbar from './components/navbar/Navbar'
 
 import { EthereumContext } from '../context/EthereumContext'
 
 import theme from './theme'
 //import styles from '../styles/Main.module.css';
-import CityList from './city';
-import CityDetails from './city/show';
-import ControlBar from './controlBar/ControlBar'
+import CityList from './components/city'
+import CityDetails from './components/city/show'
+import ControlBar from './components/controlBar/ControlBar'
 
-import { Box } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react'
 
 export enum GameScreen {
   Landing = "landing",
@@ -24,18 +24,19 @@ export enum GameScreen {
 }
 
 export interface Inventory {
-  doubloons: number,
+  gold: number,
+  porcelain: number,
   wood: number
 }
 
 const OldSalt: NextPage = () => {
-  const { currentAccount } = useContext(EthereumContext);
+  const { currentAccount } = useContext(EthereumContext)
 
   const [currentCity, setCurrentCity] = useState<string | undefined>(undefined)
   const [currentScreen, setCurrentScreen] = useState<GameScreen>(GameScreen.Landing)
   const [inventory, setInventory] = useState<Inventory>({ doubloons: 0, wood: 0 })
-  const [txInProgress, setTxInProgress] = useState<boolean>(false);
-  const [userShips, setUserShips] = useState<string[]>([]);
+  const [txInProgress, setTxInProgress] = useState<boolean>(false)
+  const [userShips, setUserShips] = useState<any[]>([])
 
   return (
     <Box backgroundColor={theme.colors.background}>
@@ -89,8 +90,8 @@ const OldSalt: NextPage = () => {
 
               if (currentScreen === GameScreen.CityDetail) {
                 if (currentCity === undefined) {
-                  console.error('City missing for city details view.');
-                  return;
+                  console.error('City missing for city details view.')
+                  return
                 }
 
                 return <CityDetails

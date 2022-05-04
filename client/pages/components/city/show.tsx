@@ -1,6 +1,5 @@
 import React from "react";
 import { Box, Button, Flex, Heading, SimpleGrid } from '@chakra-ui/react'
-import { GameScreen } from "..";
 
 interface CityDetailsProps {
   city: string,

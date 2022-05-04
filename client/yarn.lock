@@ -1152,6 +1152,11 @@
     "@ethersproject/properties" "^5.5.0"
     "@ethersproject/strings" "^5.5.0"
 
+"@fontsource/trade-winds@^4.5.9":
+  version "4.5.9"
+  resolved "https://registry.yarnpkg.com/@fontsource/trade-winds/-/trade-winds-4.5.9.tgz#e11cbc3583760aa0e87952c4b3c84b38483efbdb"
+  integrity sha512-hdhW1QdhQNQ+9T78NuHI4xWzx9FrL1t4ZSTham6eb5pKl233NjPxWY/tXkN9dikCIqigX7mHAG32MGYs5g5Szw==
+
 "@hapi/accept@5.0.2":
   version "5.0.2"
   resolved "https://registry.yarnpkg.com/@hapi/accept/-/accept-5.0.2.tgz#ab7043b037e68b722f93f376afb05e85c0699523"

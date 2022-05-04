@@ -9,7 +9,7 @@ import {
   Th,
   Tr,
 } from '@chakra-ui/react';
-import { GameScreen } from "..";
+import { GameScreen } from "../..";
 
 interface CityListProps {
   setCurrentCity: Function

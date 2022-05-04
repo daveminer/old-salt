@@ -2,18 +2,25 @@
 pragma solidity ^0.8.2;
 
 library Voyage {
-    function voyage(uint256 _luckRoll) internal pure returns (uint8) {
-        // lose resources (crew, food etc.)
+    function voyage(uint256 _luckRoll)
+        internal
+        view
+        returns (uint256, uint256)
+    {
+        // lose resources (crew, food, ship,  etc.)
         uint64[4] memory luckSections = marshallLuckRoll(_luckRoll);
 
         bool success = successCheck(luckSections[0]);
-        uint8 earnings = 0;
+        uint256 earnings = 0;
+        uint256 sunk_at = 0;
 
         if (success == true) {
             earnings = 10;
+        } else {
+            sunk_at = block.number;
         }
 
-        return earnings;
+        return (sunk_at, earnings);
     }
 
     function marshallLuckRoll(uint256 luckRoll)
