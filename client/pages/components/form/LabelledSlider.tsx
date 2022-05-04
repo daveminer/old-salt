@@ -13,14 +13,14 @@ interface LabelledSliderProps {
   label: string
   max?: number,
   setValue: Function,
-  value?: number
+  value: number
 }
 
 const LabelledSlider = ({
   label,
   max = 100,
   setValue,
-  value = 0
+  value
 }: LabelledSliderProps) => {
   return (
     <>

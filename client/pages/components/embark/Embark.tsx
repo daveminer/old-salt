@@ -41,7 +41,12 @@ const Embark = ({
 
   const [crewCount, setCrewCount] = useState(0)
   const [foodCount, setFoodCount] = useState(0)
+  const [fursCount, setFursCount] = useState(0)
+  const [goldCount, setGoldCount] = useState(0)
+  const [ironCount, setIronCount] = useState(0)
   const [porcelainCount, setPorcelainCount] = useState(0)
+  const [spiceCount, setSpiceCount] = useState(0)
+  const [woodCount, setWoodCount] = useState(0)
 
   return (
     <>
@@ -116,16 +121,49 @@ const Embark = ({
                       label='crew'
                       max={1000}
                       setValue={setCrewCount}
+                      value={crewCount}
                     />
                     <LabelledSlider
                       label='food'
                       max={10000}
                       setValue={setFoodCount}
+                      value={foodCount}
                     />
                     <LabelledSlider
-                      label='food'
+                      label='furs'
+                      max={10000}
+                      setValue={setFursCount}
+                      value={fursCount}
+                    />
+                    <LabelledSlider
+                      label='gold'
+                      max={10000}
+                      setValue={setGoldCount}
+                      value={goldCount}
+                    />
+                    <LabelledSlider
+                      label='iron'
+                      max={10000}
+                      setValue={setIronCount}
+                      value={ironCount}
+                    />
+                    <LabelledSlider
+                      label='porcelain'
                       max={10000}
                       setValue={setPorcelainCount}
+                      value={porcelainCount}
+                    />
+                    <LabelledSlider
+                      label='spice'
+                      max={10000}
+                      setValue={setSpiceCount}
+                      value={spiceCount}
+                    />
+                    <LabelledSlider
+                      label='wood'
+                      max={10000}
+                      setValue={setWoodCount}
+                      value={woodCount}
                     />
                   </ModalBody>
                   <ModalFooter>
