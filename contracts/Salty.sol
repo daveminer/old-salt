@@ -48,6 +48,9 @@ contract Salty is
     uint256 randNonce = 0;
 
     struct Ship {
+        uint256 beam;
+        uint256 keel;
+        uint256 shipLength;
         uint256 signature;
         uint256 sunk_at;
     }
@@ -129,14 +132,33 @@ contract Salty is
     //     return isApprovedForAll(minter(), msg.sender);
     // }
 
-    function buildShip(address _account, uint256 _wood) public {
+    function buildShip(
+        address _account,
+        uint256 beamFactor,
+        uint256 keelFactor,
+        uint256 lengthFactor,
+        uint256 _wood
+    ) public {
         // TODO: require and consume wood from caller
         console.log(_account, "ACCOUNT");
         console.log(minter(), "MINT");
 
         removeShipMaterials(_account, _wood);
 
-        ships.push(Ship(randMod(), 0));
+        uint256 appliedMaterial = calculateMaterialLoss(_wood);
+
+        // Fuzz the dimensions 15%
+        uint256 finalBeamValue = fuzzInt(appliedMaterial * beamFactor, 15);
+
+        uint256 finalKeelValue = fuzzInt(appliedMaterial * keelFactor, 15);
+
+        uint256 finalLengthValue = fuzzInt(appliedMaterial * lengthFactor, 15);
+
+        // TODO: compute hit points, cannon points, speed, manuverability, hold size etc.
+
+        ships.push(
+            Ship(finalBeamValue, finalKeelValue, finalLengthValue, randMod(), 0)
+        );
         uint256 id = ships.length - 1;
         shipToOwner[id] = _account;
         userOwnedShips[_account].push(id);
@@ -166,6 +188,12 @@ contract Salty is
 
     function removeShipMaterials(address _account, uint256 _wood) private {
         safeTransferFrom(_account, minter(), WOOD, _wood, "");
+    }
+
+    function calculateMaterialLoss(uint256 _wood) private returns (uint256) {
+        uint256 lossRoll = randMod() % 50;
+
+        return (_wood * lossRoll) / 100;
     }
 
     function userShips(address _account)
@@ -236,6 +264,16 @@ contract Salty is
         bytes memory data
     ) public onlyRole(MINTER_ROLE) {
         _mintBatch(to, ids, amounts, data);
+    }
+
+    // TODO: not safe from over/underflow, validate inputs
+    function fuzzInt(uint256 original, uint256 percentToFuzz)
+        internal
+        returns (uint256)
+    {
+        int256 modPercent = int256((randMod() % (percentToFuzz * 2))) - 15;
+        int256 amountToFuzz = (int256(original) * modPercent) / 100;
+        return original + uint256(amountToFuzz);
     }
 
     // TODO: replace this with a secure generation method; this is dev-only
