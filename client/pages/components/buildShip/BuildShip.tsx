@@ -1,4 +1,4 @@
-import { useContext } from "react"
+import { useContext, useState } from "react"
 import {
   Box,
   Button,
@@ -8,17 +8,13 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  NumberInput,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
-  NumberInputField,
-  NumberInputStepper
+  Text
 } from '@chakra-ui/react'
 import { Field, Form, Formik } from 'formik'
 
 import { ethers } from "ethers"
 import { EthereumContext } from '../../../context/EthereumContext'
-
+import ShipwrightSlider from '../form/ShipwrightSlider'
 
 interface BuildShipProps {
   currentAccount: string | undefined
@@ -46,6 +42,9 @@ const BuildShip = ({
           <ModalContent>
             <Formik
               initialValues={{
+                beam: '34',
+                keel: '33',
+                shipLength: '33',
                 wood: '10'
               }}
               validate={values => {
@@ -61,7 +60,14 @@ const BuildShip = ({
                 return errors
               }}
               onSubmit={async (values, actions) => {
-                const buildResult = await buildShip({ wood: values.wood })
+                console.log(values, "VALS")
+                console.log(actions, "ACTIONS")
+                const buildResult = await buildShip({
+                  beam: values.beam,
+                  keel: values.keel,
+                  shipLength: values.shipLength,
+                  wood: values.wood
+                })
 
                 const provider = new ethers.providers.Web3Provider(window.ethereum)
 
@@ -83,20 +89,7 @@ const BuildShip = ({
                 <Form>
                   <ModalCloseButton />
                   <ModalBody mt={1}>
-                    <div>
-                      Commit resources to ship building
-                    </div>
-                    <Field name="wood">
-                      {({ field, form }: any) => (
-                        <NumberInput {...field} allowMouseWheel defaultValue={10} min={10} max={1000000}>
-                          <NumberInputField />
-                          <NumberInputStepper>
-                            <NumberIncrementStepper />
-                            <NumberDecrementStepper />
-                          </NumberInputStepper>
-                        </NumberInput>
-                      )}
-                    </Field>
+                    <ShipwrightSlider />
                   </ModalBody>
                   <ModalFooter>
                     <Button type='submit'>

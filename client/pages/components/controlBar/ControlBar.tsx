@@ -77,6 +77,7 @@ const ControlBar = ({ currentScreen,
           }
           {(currentScreen !== GameScreen.Map) &&
             <Button
+              variant='outline'
               onClick={() => setScreen(GameScreen.Map)}
               marginLeft='4'
             >

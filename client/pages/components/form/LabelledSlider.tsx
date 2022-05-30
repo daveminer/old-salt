@@ -31,9 +31,9 @@ const LabelledSlider = ({
         {({ field, form }: any) => (
           <Slider
             aria-label='slider-ex-1'
-            defaultValue={value}
             onChange={(val) => setValue(val)}
             max={max}
+            value={value}
           >
             <SliderTrack>
               <SliderFilledTrack />

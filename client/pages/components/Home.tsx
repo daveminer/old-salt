@@ -59,7 +59,8 @@ const Home = ({ setUserShips, userShips }: HomeProps) => {
 
               return (
                 <Box key={`ship-${idx}`}>
-                  <Box key={`signature-${idx}`}>{ship[0].toString()}</Box>
+                  <Box key={`shipShape-${idx}`}>{`b:${ship.beam} k:${ship.keel} l:${ship.shipLength}`}</Box>
+                  <Box key={`signature-${idx}`}>{ship.signature.toString()}</Box>
                   <Box key={`shipType-${idx}`}>
                     {shipType(ship.signature)}
                   </Box>

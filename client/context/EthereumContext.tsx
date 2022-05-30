@@ -17,7 +17,10 @@ interface EthereumContextInterface {
 }
 
 interface BuildShipInput {
-  wood: Number
+  beam: number
+  keel: number
+  shipLength: number
+  wood: number
 }
 
 const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS
@@ -70,11 +73,11 @@ export const EthereumProvider = ({ children }: any) => {
   // }
 
 
-  const buildShip = async ({ wood }: BuildShipInput) => {
+  const buildShip = async ({ beam, keel, shipLength, wood }: BuildShipInput) => {
     try {
       if (!ethereum) return alert("Please install MetaMask.")
 
-      let result = await contract.buildShip(currentAccount, wood)
+      let result = await contract.buildShip(currentAccount, beam, keel, shipLength, wood)
 
       return result
     } catch (error) {
