@@ -2,51 +2,44 @@
 
 ## Setting up the dev environment
 
-The instructions for setting up the project are largely derived from the [Hardhat Network docs](https://hardhat.org/hardhat-network/)
+This is a [Hardhat](https://hardhat.org/hardhat-network/) dApp with a [NextJS](https://nextjs.org/) front end (/client).
 
+A Makefile is included that provides the commands need to start the development environment via the following steps.
 
-### Manual setup
+### Native dev environment
 
-How to run the dev environment via Linux/OSX terminals
+This method requires two terminals:
 
-#### Deploying the contract
+- one for the local blockchain
+- one for running deployment scripts and the front end web server.
 
-In one console and from the project root, start a standalone network:
+#### Start the local blockchain
 
-`npx hardhat node`
+In the first terminal, run `make chain`. This will start a local instance of [Hardhat Network](https://hardhat.org/tutorial/debugging-with-hardhat-network#_6-debugging-with-hardhat-network) and display the test account addresses _(these addresses persist through restarts)_
 
-From a new console and in the project root:
-```
-// Start a Hardhat Network console to localhost
-npx hardhat console --network localhost
+#### Deploy the contract
 
-// Get the contract factory
-const Salty = await ethers.getContractFactory("Salty");
+_Note: This step will write to the **client/.env.local** file._
 
-// Attach the contract to the account
-const salty = Salty.attach("0x8626f6940e2eb28930efb4cef49b2d1f2c9c1199");
+Open another terminal at the project root and run `make deploy`. This command will deploy the contract, seed the development
+player accounts with game resources, and write the new contract address to the **client/.env.local** file (or create
+it if it doesn't exist).
 
-// Call a contract function
-await salty.buildKeel("0x8626f6940e2eb28930efb4cef49b2d1f2c9c1199");
-```
+#### Start the front end web server
 
-Congratulations, you did stuff!
+From the deployment terminal (or yet a new terminal if preferred): `make game`
 
-## Miscellaneous
+### Set up Metamask
 
-If Hardhat script doesn't trigger output in the node, try:
-```
-npx hardhat run --network localhost scripts/deploy-salty.js
-```
+_Under construction_
 
-This project is based on Hardhat, which can run these tasks (among others):
+## How to play
 
-```shell
-npx hardhat accounts
-npx hardhat compile
-npx hardhat clean
-npx hardhat test
-npx hardhat node
-node scripts/sample-script.js
-npx hardhat help
-```
+You should have some starting resources (wood): this can be used to create ships.
+
+### What's on the current roadmap?
+
+- Reorganization of all the source code
+- Add add stats to ships based on RNG and user input at creation time
+- Support location for ships
+- Support ships in ports/locations (static or dynamic?)

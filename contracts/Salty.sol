@@ -75,13 +75,13 @@ contract Salty is
     }
 
     function initialize() public initializer {
+        console.log("Initializing primary contract.");
+
         __ERC1155_init("https://www.salty.crypto");
         __AccessControl_init();
         __Pausable_init();
         __ERC1155Burnable_init();
         __ERC1155Supply_init();
-
-        console.log(msg.sender, "INITIALIZING");
 
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _setupRole(URI_SETTER_ROLE, msg.sender);
