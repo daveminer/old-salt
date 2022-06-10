@@ -21,7 +21,7 @@ In the first terminal, run `make chain`. This will start a local instance of [Ha
 
 _Note: This step will write to the **client/.env.local** file._
 
-Open another terminal at the project root and run `make deploy`. This command will deploy the contract, seed the development
+Open another terminal at the project root and run `make contract`. This command will deploy the contract, seed the development
 player accounts with game resources, and write the new contract address to the **client/.env.local** file (or create
 it if it doesn't exist).
 

@@ -1,7 +1,7 @@
 chain:
 	npx hardhat node
 
-deploy:
+contract:
 	npx hardhat run scripts/local/deploy.js
 
 game:

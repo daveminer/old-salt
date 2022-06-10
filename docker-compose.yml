@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+  blockchain:
+    build: .
+    image: old-salt
+    ports:
+      - 8545:8545
+  web:
+    build:
+      context: .
+      dockerfile: ./client/Dockerfile
+    depends_on:
+     - blockchain
+    image: old-salt-web
+    ports:
+      - 3000:3000

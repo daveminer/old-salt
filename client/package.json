@@ -8,8 +8,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@chakra-ui/icons": "^1.1.7",
-    "@chakra-ui/react": "^1.8.8",
+    "@chakra-ui/icons": "^2.0.2",
+    "@chakra-ui/react": "^2.0.0",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
     "@fontsource/trade-winds": "^4.5.9",
@@ -17,8 +17,8 @@
     "formik": "^2.2.9",
     "framer-motion": "^6",
     "next": "12.0.7",
-    "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react": "18.1.0",
+    "react-dom": "18.1.0"
   },
   "devDependencies": {
     "@types/node": "17.0.8",
