@@ -29,6 +29,16 @@ it if it doesn't exist).
 
 From the deployment terminal (or yet a new terminal if preferred): `make game`
 
+### Docker Compose Dev Environment
+
+From the project root:
+```
+docker-compose build
+docker-compose up
+```
+
+...then load `http://localhost:3000` in a browser.
+
 ### Set up Metamask
 
 _Under construction_
