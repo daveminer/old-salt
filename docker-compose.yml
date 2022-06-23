@@ -14,3 +14,29 @@ services:
     image: old-salt-web
     ports:
       - 3000:3000
+  chainlink:
+    build: ./chainlink
+    command: local node -p /chainlink/.password -a /chainlink/.api
+    #command: local node -p "PA@SSword1234!567" -a "user@example.com"
+    env_file:
+      - ./chainlink/chainlink-kovan/.env
+    restart: on-failure
+    ports:
+      - 6688:6688
+    volumes:
+      - ./chainlink/chainlink-kovan:/chainlink
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: pOStgrEs-_.postgres123
+      POSTGRES_DB: chainlink
+    ports:
+      - 5432:5432
+    volumes:
+      - db:/var/lib/postgresql/data
+      #- ./init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+volumes:
+  chainlink_data:
+  db:
+    driver: local
