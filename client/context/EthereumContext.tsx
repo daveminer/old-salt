@@ -36,21 +36,13 @@ export const EthereumProvider = ({ children }: any) => {
   useEffect(() => {
     if (window.ethereum === undefined) return
     if (contractAddress === undefined) {
-      console.error("CONTRACT_ADDRESS is undefined.")
+      console.error("NEXT_PUBLIC_CONTRACT_ADDRESS is undefined.")
       return
     }
 
     if (contract === undefined) {
       const provider = new ethers.providers.Web3Provider(window.ethereum)
-
-      const filter = {}
-      // provider.on(filter, (log, event) => {
-      //   console.log(log, "CHAIN EVENT LOG");
-      //   console.info(event, "CHAIN EVENT");
-      // })
-
       const contract = new ethers.Contract(contractAddress, Salty.abi, provider.getSigner())
-
 
       setContract(contract)
     }
@@ -72,20 +64,9 @@ export const EthereumProvider = ({ children }: any) => {
   //   }
   // }
 
-
-  const buildShip = async ({ beam, keel, shipLength, wood }: BuildShipInput) => {
-    try {
-      if (!ethereum) return alert("Please install MetaMask.")
-
-      let result = await contract.buildShip(currentAccount, beam, keel, shipLength, wood)
-
-      return result
-    } catch (error) {
-      console.log(error)
-
-      throw new Error("No ethereum object")
-    }
-  }
+  const buildShip = async ({ beam, keel, shipLength, wood }: BuildShipInput) =>
+    contract.buildShip(currentAccount, beam, keel, shipLength, wood)
+      .catch((e: Error) => console.error(e.message))
 
   // const checkApproval = async () => {
   //   try {
@@ -102,64 +83,24 @@ export const EthereumProvider = ({ children }: any) => {
   // }
 
   const connectWallet = async () => {
-    try {
-      if (!ethereum) return alert("Please install MetaMask.")
+    const accounts = await ethereum.request({ method: "eth_requestAccounts", })
+      .catch((e: Error) => console.error(e.message))
 
-      const accounts = await ethereum.request({ method: "eth_requestAccounts", })
-
-      setCurrentAccount(accounts[0])
-    } catch (error) {
-      console.log(error)
-
-      throw new Error("No ethereum object")
-    }
+    setCurrentAccount(accounts[0])
   }
 
-  const disconnectWallet = async () => {
-    try {
-      if (!ethereum) return alert("Please install MetaMask.")
-      setCurrentAccount(undefined)
-    } catch (error) {
-      console.log(error)
+  const disconnectWallet = () => setCurrentAccount(undefined)
 
-      throw new Error("No ethereum object")
-    }
-  }
+  const embark = async ({ shipIndex: shipIndex }: any) =>
+    contract.embark(currentAccount, shipIndex)
+      .catch((e: Error) => console.error(e.message))
 
-  const embark = async ({ shipIndex: shipIndex }: any) => {
-    try {
-      if (!ethereum) return alert("Please install MetaMask.")
-
-      const embarkResult = await contract.embark(currentAccount, shipIndex)
-
-    } catch (error) {
-      console.log(error)
-
-      throw new Error("No ethereum object")
-    }
-  }
   const ships = async () => {
-    try {
-      if (!ethereum) return alert("Please install MetaMask.")
+    const shipIds = await contract.userShips(currentAccount)
+      .catch((e: Error) => console.error(e.message))
 
-      let shipIds = await contract.userShips(currentAccount)
-
-      let ships = []
-      for (let shipId in shipIds) {
-        console.log(shipId, "SHIPID")
-        let shipSignature = await contract.ships(shipId.toString())
-        let shipWithId = { shipIndex: shipId, ...shipSignature }
-        console.log(shipSignature, "SHIPSIG")
-        console.log(shipWithId, "SHIPPPPP")
-        ships.push(shipWithId)
-      }
-
-      return ships
-    } catch (error) {
-      console.log(error)
-
-      throw new Error("No ethereum object")
-    }
+    const shipCalls = shipIds.map(async (shipId: string) => contract.ships(shipId))
+    return await Promise.all(shipCalls).catch(e => console.error(e.message))
   }
 
   const userInventory = async () => {

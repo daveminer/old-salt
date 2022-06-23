@@ -31,10 +31,8 @@ const shipType = (signature: any) => {
 const Home = ({ setUserShips, userShips }: HomeProps) => {
   const { currentAccount, ships } = useContext(EthereumContext)
 
-  const fetchShips = useCallback(async (account) => {
+  const fetchShips = useCallback(async (account: string) => {
     let response = await ships(account)
-
-    console.log(response, "SHPS")
 
     setUserShips(response)
   }, [currentAccount])
@@ -55,7 +53,7 @@ const Home = ({ setUserShips, userShips }: HomeProps) => {
         <Box>
           {userShips.length > 0 ?
             userShips.map((ship, idx) => {
-              console.log(ship.sunk_at, "SHIP")
+              console.log(ship, "SHIP")
 
               return (
                 <Box key={`ship-${idx}`}>

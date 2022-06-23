@@ -2,7 +2,7 @@ chain:
 	npx hardhat node
 
 contract:
-	npx hardhat run scripts/local/deploy.js
+	npx hardhat run --network localhost scripts/local/deploy.js
 
 game:
 	cd client; \

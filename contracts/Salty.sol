@@ -139,26 +139,40 @@ contract Salty is
         uint256 lengthFactor,
         uint256 _wood
     ) public {
-        // TODO: require and consume wood from caller
-        console.log(_account, "ACCOUNT");
-        console.log(minter(), "MINT");
-
+        console.log("BUILDSHIP");
         removeShipMaterials(_account, _wood);
 
         uint256 appliedMaterial = calculateMaterialLoss(_wood);
 
         // Fuzz the dimensions 15%
         uint256 finalBeamValue = fuzzInt(appliedMaterial * beamFactor, 15);
-
         uint256 finalKeelValue = fuzzInt(appliedMaterial * keelFactor, 15);
-
         uint256 finalLengthValue = fuzzInt(appliedMaterial * lengthFactor, 15);
 
-        // TODO: compute hit points, cannon points, speed, manuverability, hold size etc.
+        uint256 signature = randMod();
+
+        // uint256 hitPoints = finalLengthValue +
+        //     (finalBeamValue * 5) +
+        //     (finalKeelValue * 2);
+
+        // uint256 cannonPoints = finalLengthValue * 2 + finalKeelValue;
+
+        // uint256 speed = (finalLengthValue * 3) -
+        //     (finalBeamValue * 2) -
+        //     finalKeelValue;
+
+        // uint256 maneuverability = (finalBeamValue * 4) -
+        //     finalKeelValue -
+        //     (finalLengthValue * 2);
+
+        // uint256 holdSize = (finalBeamValue * 4) +
+        //     (finalKeelValue * 2) +
+        //     finalLengthValue;
 
         ships.push(
-            Ship(finalBeamValue, finalKeelValue, finalLengthValue, randMod(), 0)
+            Ship(finalBeamValue, finalKeelValue, finalLengthValue, signature, 0)
         );
+
         uint256 id = ships.length - 1;
         shipToOwner[id] = _account;
         userOwnedShips[_account].push(id);
@@ -205,6 +219,7 @@ contract Salty is
     }
 
     function crew(address _account) public view returns (uint256) {
+        console.log("CREW");
         return balanceOf(_account, CREW);
     }
 
@@ -273,7 +288,7 @@ contract Salty is
     {
         int256 modPercent = int256((randMod() % (percentToFuzz * 2))) - 15;
         int256 amountToFuzz = (int256(original) * modPercent) / 100;
-        return original + uint256(amountToFuzz);
+        return original; // + uint256(amountToFuzz);
     }
 
     // TODO: replace this with a secure generation method; this is dev-only

@@ -13,8 +13,9 @@ interface InventoryPaneProps {
 const InventoryPane = ({ inventory, setInventory }: InventoryPaneProps) => {
   const { contract, currentAccount, userInventory } = useContext(EthereumContext)
   if (!contract) throw new Error("Contract is undefined")
+  if (!currentAccount) throw new Error("Contract is undefined")
 
-  const fetchInventory = useCallback(async (account) => {
+  const fetchInventory = useCallback(async (account: string) => {
     let response = await userInventory(account)
 
     setInventory({
