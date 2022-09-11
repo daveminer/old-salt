@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.2;
 
+import {Chaos} from "./Chaos.sol";
+import {Vessel} from "./Vessel.sol";
 import {Voyage} from "./Voyage.sol";
 import "hardhat/console.sol";
 
@@ -11,6 +13,9 @@ import "@openzeppelin/contracts-upgradeable/token/ERC1155/extensions/ERC1155Burn
 import "@openzeppelin/contracts-upgradeable/token/ERC1155/extensions/ERC1155SupplyUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
+import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
+import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
+
 /// @custom:security-contact dave.miner@live.com
 contract Salty is
     Initializable,
@@ -18,7 +23,8 @@ contract Salty is
     AccessControlEnumerableUpgradeable,
     PausableUpgradeable,
     ERC1155BurnableUpgradeable,
-    ERC1155SupplyUpgradeable
+    ERC1155SupplyUpgradeable,
+    Chaos
 {
     bytes32 public constant URI_SETTER_ROLE = keccak256("URI_SETTER_ROLE");
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
@@ -43,22 +49,13 @@ contract Salty is
     uint256 public constant IRON_SHOT = 9 << 128;
     uint256 public constant STONE_SHOT = 10 << 128;
 
-    // TODO: replace with a secure method
-    // Initializing a nonce for random numbers in development
-    uint256 randNonce = 0;
-
-    struct Ship {
-        uint256 beam;
-        uint256 keel;
-        uint256 shipLength;
-        uint256 signature;
-        uint256 sunk_at;
-    }
-
-    Ship[] public ships;
+    Vessel.Ship[] public ships;
 
     mapping(uint256 => address) public shipToOwner;
     mapping(address => uint256[]) public userOwnedShips;
+
+    // Chainlink config
+    event DiceRolled(uint256 indexed requestId, address indexed roller);
 
     // This should be in Voyage.sol but can't yet:
     // https://github.com/ethereum/solidity/pull/10996
@@ -70,11 +67,11 @@ contract Salty is
     );
 
     /// @custom:oz-upgrades-unsafe-allow constructor
-    constructor() initializer {
-        initialize();
+    constructor(uint64 subscriptionId) Chaos {
+        initialize_game();
     }
 
-    function initialize() public initializer {
+    function initialize_game() public initializer {
         console.log("Initializing primary contract.");
 
         __ERC1155_init("https://www.salty.crypto");
@@ -134,45 +131,23 @@ contract Salty is
 
     function buildShip(
         address _account,
-        uint256 beamFactor,
-        uint256 keelFactor,
-        uint256 lengthFactor,
+        uint256 _beamFactor,
+        uint256 _keelFactor,
+        uint256 _lengthFactor,
         uint256 _wood
     ) public {
-        console.log("BUILDSHIP");
+        // TODO: cannot be building a ship: check this
         removeShipMaterials(_account, _wood);
 
-        uint256 appliedMaterial = calculateMaterialLoss(_wood);
-
-        // Fuzz the dimensions 15%
-        uint256 finalBeamValue = fuzzInt(appliedMaterial * beamFactor, 15);
-        uint256 finalKeelValue = fuzzInt(appliedMaterial * keelFactor, 15);
-        uint256 finalLengthValue = fuzzInt(appliedMaterial * lengthFactor, 15);
-
-        uint256 signature = randMod();
-
-        // uint256 hitPoints = finalLengthValue +
-        //     (finalBeamValue * 5) +
-        //     (finalKeelValue * 2);
-
-        // uint256 cannonPoints = finalLengthValue * 2 + finalKeelValue;
-
-        // uint256 speed = (finalLengthValue * 3) -
-        //     (finalBeamValue * 2) -
-        //     finalKeelValue;
-
-        // uint256 maneuverability = (finalBeamValue * 4) -
-        //     finalKeelValue -
-        //     (finalLengthValue * 2);
-
-        // uint256 holdSize = (finalBeamValue * 4) +
-        //     (finalKeelValue * 2) +
-        //     finalLengthValue;
-
-        ships.push(
-            Ship(finalBeamValue, finalKeelValue, finalLengthValue, signature, 0)
+        Ship newShip = Vessel.buildShip(
+            _beamFactor,
+            _keelFactor,
+            lengthFactor,
+            _wood
         );
 
+        // Record the new ship
+        ships.push(newShip);
         uint256 id = ships.length - 1;
         shipToOwner[id] = _account;
         userOwnedShips[_account].push(id);
@@ -204,11 +179,11 @@ contract Salty is
         safeTransferFrom(_account, minter(), WOOD, _wood, "");
     }
 
-    function calculateMaterialLoss(uint256 _wood) private returns (uint256) {
-        uint256 lossRoll = randMod() % 50;
+    // function calculateMaterialLoss(uint256 _wood) private returns (uint256) {
+    //     uint256 lossRoll = randMod() % 50;
 
-        return (_wood * lossRoll) / 100;
-    }
+    //     return (_wood * lossRoll) / 100;
+    // }
 
     function userShips(address _account)
         public
@@ -219,7 +194,6 @@ contract Salty is
     }
 
     function crew(address _account) public view returns (uint256) {
-        console.log("CREW");
         return balanceOf(_account, CREW);
     }
 
@@ -281,22 +255,6 @@ contract Salty is
         _mintBatch(to, ids, amounts, data);
     }
 
-    // TODO: not safe from over/underflow, validate inputs
-    function fuzzInt(uint256 original, uint256 percentToFuzz)
-        internal
-        returns (uint256)
-    {
-        int256 modPercent = int256((randMod() % (percentToFuzz * 2))) - 15;
-        int256 amountToFuzz = (int256(original) * modPercent) / 100;
-        return original; // + uint256(amountToFuzz);
-    }
-
-    // TODO: replace this with a secure generation method; this is dev-only
-    function randMod() internal returns (uint256) {
-        randNonce++;
-        return uint256(keccak256(abi.encodePacked(randNonce)));
-    }
-
     function _beforeTokenTransfer(
         address operator,
         address from,
@@ -312,8 +270,34 @@ contract Salty is
         super._beforeTokenTransfer(operator, from, to, ids, amounts, data);
     }
 
-    // The following functions are overrides required by Solidity.
+    // Implement the VRF callback here so the following ship stuff can be handled.
+    function fulfillRandomWords(uint256 requestId, uint256[] memory randomWords)
+        internal
+        override
+    {
+        address shipwright = s_shipwrights[requestId];
 
+        uint256[6] storage lastShip = lastBuild(shipwright);
+
+        for (uint256 i = 0; i < lastShip.length; i++) {
+            lastShip[i] = randomWords[i];
+        }
+
+        // balance
+        // comfort
+
+        // craftsmanship
+        // design
+        // spirit
+
+        //white oak
+        //https://www.quora.com/What-are-the-properties-of-wood-for-making-a-wooden-boat
+
+        // emitting event to signal that dice landed
+        emit ShipBuildDone(requestId, randomWords);
+    }
+
+    // The following function is an override required by Solidity.
     function supportsInterface(bytes4 interfaceId)
         public
         view
