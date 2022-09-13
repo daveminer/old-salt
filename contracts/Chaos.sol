@@ -88,12 +88,12 @@ abstract contract Chaos is VRFConsumerBaseV2 {
     }
 
     function readyToRoll(address shipwright) internal view returns (bool) {
-        uint256[6] memory lastShip = lastBuild(shipwright);
+        uint256[6] memory lastShip = lastVRFResults(shipwright);
 
         return lastShip[0] != 0;
     }
 
-    function lastBuild(address _shipwright)
+    function lastVRFResults(address _shipwright)
         internal
         view
         returns (uint256[6] storage)

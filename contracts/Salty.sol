@@ -24,7 +24,8 @@ contract Salty is
     PausableUpgradeable,
     ERC1155BurnableUpgradeable,
     ERC1155SupplyUpgradeable,
-    Chaos
+    Chaos,
+    Vessel
 {
     bytes32 public constant URI_SETTER_ROLE = keccak256("URI_SETTER_ROLE");
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
@@ -49,11 +50,6 @@ contract Salty is
     uint256 public constant IRON_SHOT = 9 << 128;
     uint256 public constant STONE_SHOT = 10 << 128;
 
-    Vessel.Ship[] public ships;
-
-    mapping(uint256 => address) public shipToOwner;
-    mapping(address => uint256[]) public userOwnedShips;
-
     // Chainlink config
     event DiceRolled(uint256 indexed requestId, address indexed roller);
 
@@ -67,7 +63,8 @@ contract Salty is
     );
 
     /// @custom:oz-upgrades-unsafe-allow constructor
-    constructor(uint64 subscriptionId) Chaos {
+    constructor(uint64 _subscriptionId) Chaos(_subscriptionId) {
+        s_subscriptionId = _subscriptionId;
         initialize_game();
     }
 
@@ -136,54 +133,44 @@ contract Salty is
         uint256 _lengthFactor,
         uint256 _wood
     ) public {
-        // TODO: cannot be building a ship: check this
+        require(Chaos.readyToRoll(_account));
+
         removeShipMaterials(_account, _wood);
 
-        Ship newShip = Vessel.buildShip(
+        Vessel.startShipBuild(
+            _account,
             _beamFactor,
             _keelFactor,
-            lengthFactor,
+            _lengthFactor,
             _wood
         );
-
-        // Record the new ship
-        ships.push(newShip);
-        uint256 id = ships.length - 1;
-        shipToOwner[id] = _account;
-        userOwnedShips[_account].push(id);
     }
 
-    function embark(address _account, uint256 _ship) public {
-        // TODO: ship must belong to account
-        console.log(_ship, "SHIP");
+    // function embark(address _account, uint256 _ship) public {
+    //     // TODO: ship must belong to account
+    //     console.log(_ship, "SHIP");
 
-        // random luck for outcomes of trip
-        uint256 luckRoll = uint256(keccak256(abi.encodePacked(randNonce)));
-        randNonce++;
+    //     // random luck for outcomes of trip
+    //     uint256 luckRoll = uint256(keccak256(abi.encodePacked(randNonce)));
+    //     randNonce++;
 
-        (uint256 sunk_at, uint256 dubEarned) = Voyage.voyage(luckRoll);
-        if (dubEarned > 0) {
-            _safeTransferFrom(minter(), _account, GOLD, dubEarned, "");
-            emit VoyageComplete(_account, _ship, true, dubEarned);
-            return;
-        }
+    //     (uint256 sunk_at, uint256 dubEarned) = Voyage.voyage(luckRoll);
+    //     if (dubEarned > 0) {
+    //         _safeTransferFrom(minter(), _account, GOLD, dubEarned, "");
+    //         emit VoyageComplete(_account, _ship, true, dubEarned);
+    //         return;
+    //     }
 
-        // this ship sunk!
-        Ship storage ship = ships[_ship];
-        ship.sunk_at = sunk_at;
+    //     // this ship sunk!
+    //     Ship storage ship = ships[_ship];
+    //     ship.sunk_at = sunk_at;
 
-        emit VoyageComplete(_account, _ship, false, 0);
-    }
+    //     emit VoyageComplete(_account, _ship, false, 0);
+    // }
 
     function removeShipMaterials(address _account, uint256 _wood) private {
         safeTransferFrom(_account, minter(), WOOD, _wood, "");
     }
-
-    // function calculateMaterialLoss(uint256 _wood) private returns (uint256) {
-    //     uint256 lossRoll = randMod() % 50;
-
-    //     return (_wood * lossRoll) / 100;
-    // }
 
     function userShips(address _account)
         public
@@ -276,19 +263,17 @@ contract Salty is
         override
     {
         address shipwright = s_shipwrights[requestId];
+        Vessel.finishShipBuild(shipwright, randomWords);
 
-        uint256[6] storage lastShip = lastBuild(shipwright);
+        // Will come back as 0 from the initial settings
+        //uint256[6] storage shipRolls = lastVRFResults(shipwright);
 
-        for (uint256 i = 0; i < lastShip.length; i++) {
-            lastShip[i] = randomWords[i];
-        }
+        // for (uint256 i = 0; i < lastShip.length; i++) {
+        //     shipRolls[i] = randomWords[i];
+        // }
 
-        // balance
-        // comfort
-
-        // craftsmanship
-        // design
-        // spirit
+        // Ship lastShip = lastShipIndex(shipwright);
+        // Vessel.finishShipBuild(lastShip);
 
         //white oak
         //https://www.quora.com/What-are-the-properties-of-wood-for-making-a-wooden-boat
