@@ -263,17 +263,15 @@ contract Salty is
         override
     {
         address shipwright = s_shipwrights[requestId];
-        Vessel.finishShipBuild(shipwright, randomWords);
 
         // Will come back as 0 from the initial settings
-        //uint256[6] storage shipRolls = lastVRFResults(shipwright);
+        uint256[6] storage shipRolls = lastVRFResults(shipwright);
 
-        // for (uint256 i = 0; i < lastShip.length; i++) {
-        //     shipRolls[i] = randomWords[i];
-        // }
+        for (uint256 i = 0; i < shipRolls.length; i++) {
+            shipRolls[i] = randomWords[i];
+        }
 
-        // Ship lastShip = lastShipIndex(shipwright);
-        // Vessel.finishShipBuild(lastShip);
+        Vessel.finishShipBuild(shipwright, randomWords);
 
         //white oak
         //https://www.quora.com/What-are-the-properties-of-wood-for-making-a-wooden-boat

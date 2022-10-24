@@ -3,6 +3,8 @@ pragma solidity ^0.8.2;
 
 contract Vessel {
     struct Ship {
+        uint256 latitude;
+        uint256 longitude;
         uint256 beam;
         uint256 beamFactor;
         uint256 keel;
@@ -36,7 +38,7 @@ contract Vessel {
         uint256 _keelFactor,
         uint256 _lengthFactor,
         uint256 _wood
-    ) public returns (Ship memory) {
+    ) internal {
         Ship memory newShip = createShipPlaceholder(
             _beamFactor,
             _keelFactor,
@@ -148,6 +150,8 @@ contract Vessel {
     ) private pure returns (Ship memory) {
         return
             Ship({
+                latitude: 0,
+                longitude: 0,
                 beam: 0,
                 beamFactor: _beamFactor,
                 keel: 0,
