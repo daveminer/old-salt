@@ -4,6 +4,9 @@ pragma solidity ^0.8.2;
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 
+//
+// Chaos provides an application-specific wrapper around Chainlink VRF functions
+//
 abstract contract Chaos is VRFConsumerBaseV2 {
     VRFCoordinatorV2Interface COORDINATOR;
 
@@ -69,10 +72,13 @@ abstract contract Chaos is VRFConsumerBaseV2 {
         onlyOwner
         returns (uint256 requestId)
     {
+        // Shipwright account must be in a state that is ready to roll a ship.
         require(readyToRoll(_shipwright));
+        // If there is a pending roll it must be finished first.
+        // TODO: this might need to check for all 0s to actually find a pending roll.
         require(s_results[_shipwright].length < 1, "Already rolled");
-        //require(s_results[shipwright].length < 1, "Already rolled");
 
+        // Request randomness and save the requestId
         requestId = COORDINATOR.requestRandomWords(
             s_keyHash,
             s_subscriptionId,
@@ -81,8 +87,10 @@ abstract contract Chaos is VRFConsumerBaseV2 {
             numWords
         );
 
+        // Record the request id and link it to the user
         s_shipwrights[requestId] = _shipwright;
-        // All 42 means roll in progress
+
+        // All 0s means roll in progress
         s_results[_shipwright].push([uint256(0), 0, 0, 0, 0, 0]);
         emit ShipBuild(requestId, _shipwright);
     }

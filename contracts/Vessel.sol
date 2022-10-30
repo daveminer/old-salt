@@ -6,11 +6,11 @@ contract Vessel {
         uint256 latitude;
         uint256 longitude;
         uint256 beam;
-        uint256 beamFactor;
+        //uint256 beamFactor;
         uint256 keel;
-        uint256 keelFactor;
+        //uint256 keelFactor;
         uint256 shipLength;
-        uint256 shipLengthFactor;
+        //uint256 shipLengthFactor;
         uint256 balance;
         uint256 comfort;
         uint256 craftsmanship;
@@ -38,23 +38,21 @@ contract Vessel {
         uint256 _keelFactor,
         uint256 _lengthFactor,
         uint256 _wood
-    ) internal {
-        Ship memory newShip = createShipPlaceholder(
-            _beamFactor,
-            _keelFactor,
-            _lengthFactor,
-            _wood
-        );
-
+    ) public {
+        // Ship memory newShip = createShipPlaceholder(
+        //     _beamFactor,
+        //     _keelFactor,
+        //     _lengthFactor,
+        //     _wood
+        // );
         // Add a new ship to the array
-        ships.push(newShip);
-        uint256 id = ships.length - 1;
-        // Map the ship by index to the builder's account
-        shipToOwner[id] = _account;
-        // Add the ship to the builder's array
-        userOwnedShips[_account].push(id);
-
-        return newShip;
+        // ships.push(newShip);
+        // uint256 id = ships.length - 1;
+        // // Map the ship by index to the builder's account
+        // shipToOwner[id] = _account;
+        // // Add the ship to the builder's array
+        // userOwnedShips[_account].push(id);
+        // return newShip;
     }
 
     function finishShipBuild(address _shipwright, uint256[] memory _vrfValues)
@@ -143,9 +141,9 @@ contract Vessel {
     }
 
     function createShipPlaceholder(
-        uint256 _beamFactor,
-        uint256 _keelFactor,
-        uint256 _lengthFactor,
+        //uint256 _beamFactor,
+        //uint256 _keelFactor,
+        //uint256 _lengthFactor,
         uint256 _woodUsed
     ) private pure returns (Ship memory) {
         return
@@ -153,11 +151,11 @@ contract Vessel {
                 latitude: 0,
                 longitude: 0,
                 beam: 0,
-                beamFactor: _beamFactor,
+                //beamFactor: _beamFactor,
                 keel: 0,
-                keelFactor: _keelFactor,
+                //keelFactor: _keelFactor,
                 shipLength: 0,
-                shipLengthFactor: _lengthFactor,
+                //shipLengthFactor: _lengthFactor,
                 balance: 0,
                 comfort: 0,
                 craftsmanship: 0,
