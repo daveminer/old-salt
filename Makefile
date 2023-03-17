@@ -8,3 +8,6 @@ game:
 	cd client; \
 	pwd; \
 	yarn dev
+
+test:
+	npx hardhat test
