@@ -1,12 +1,9 @@
-build
 node_modules
-.env
-coverage
-coverage.json
-typechain
-
-client/.next
-
-#Hardhat files
-cache
-artifacts
+target/
+src/artifacts/
+log/
+.vscode
+.DS_Store
+codegenCache.json
+store/
+.tsbuildinfo
