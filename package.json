@@ -28,7 +28,7 @@
     "profile::testnet": "AZTEC_ENV=testnet node --loader ts-node/esm scripts/profile_deploy.ts",
     "test": "yarn test:js && yarn test:nr",
     "test::testnet": "AZTEC_ENV=testnet yarn test:js",
-    "test:js": "rm -rf store/pxe && NODE_NO_WARNINGS=1 node --experimental-vm-modules $(yarn bin jest) --no-cache --runInBand --config jest.integration.config.json",
+    "test:js": "rm -rf store && NODE_NO_WARNINGS=1 node --experimental-vm-modules $(yarn bin jest) --no-cache --runInBand --config jest.integration.config.json",
     "test:nr": "aztec test",
     "update": "aztec update --contract . && ./.github/scripts/update_contract.sh $(grep -oP 'tag\\s*=\\s*\"\\K[^\"]+' \"Nargo.toml\" | head -1) && yarn && yarn update-readme-version",
     "update-readme-version": "node ./.github/scripts/update-readme-version.js"
