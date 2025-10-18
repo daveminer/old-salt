@@ -1,7 +1,15 @@
 use crate::test::utils;
-use dep::aztec::protocol_types::storage::map::derive_storage_slot_in_map;
+use dep::aztec::protocol_types::{address::AztecAddress, storage::map::derive_storage_slot_in_map};
 
 use crate::PrivateVoting;
+use crate::PrivateVoting::{Ship, VoyageNote};
+
+use dep::aztec::context::PrivateContext;
+use dep::aztec::note::note_getter::view_notes;
+use dep::aztec::note::note_viewer_options::NoteViewerOptions;
+use dep::aztec::state_vars::private_set::PrivateSet;
+
+global STORAGE_SLOT: Field = 17;
 
 #[test]
 unconstrained fn test_initializer() {
@@ -11,6 +19,33 @@ unconstrained fn test_initializer() {
         let current_admin = context.storage_read(PrivateVoting::storage_layout().admin.slot);
         assert_eq(current_admin, admin);
     });
+}
+
+#[test]
+unconstrained fn test_create_voyage() {
+    let (mut env, voting_contract_address, _) = utils::setup();
+    let alice = env.create_light_account();
+
+
+    let ship = Ship {
+        firepower: 100,
+        armor: 100,
+        speed: 100,
+    };
+
+    // let address = AztecAddress { inner: 37 };
+    env.call_private(alice, PrivateVoting::at(voting_contract_address).create_voyage(ship, address));
+
+    // env.private_context_at(voting_contract_address, |context| {
+    //     let storage_slot = PrivateVoting::storage_layout().voyages.slot;
+    //     let notes: VoyageNote = view_notes(storage_slot, NoteViewerOptions::new().set_limit(1)).get(0);
+    //     //assert_eq(notes.len(), 1);
+
+    //     // let note = notes.get(0);
+    //     // assert_eq(note.owner, alice);
+    //     // assert_eq(note.ship, ship);
+    //     // assert_eq(note.route, address);
+    // });
 }
 
 #[test]
